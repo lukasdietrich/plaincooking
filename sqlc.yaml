@@ -1,0 +1,22 @@
+version: 2
+sql:
+  - engine: sqlite
+    queries: internal/database/queries.sql
+    schema: internal/database/migrations
+    gen:
+      go:
+        package: models
+        out: internal/database/models
+        emit_interface: true
+        emit_pointers_for_null_types: true
+        emit_sql_as_comment: true
+        query_parameter_limit: 0
+        output_db_file_name: db_gen.go
+        output_models_file_name: models_gen.go
+        output_querier_file_name: querier_gen.go
+        output_files_suffix: _gen
+        overrides:
+          - column: '*.id'
+            go_type:
+              import: github.com/rs/xid
+              type: ID
