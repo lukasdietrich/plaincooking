@@ -10,6 +10,7 @@ sql:
         emit_interface: true
         emit_pointers_for_null_types: true
         emit_sql_as_comment: true
+        emit_empty_slices: true
         query_parameter_limit: 0
         output_db_file_name: db_gen.go
         output_models_file_name: models_gen.go

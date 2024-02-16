@@ -22,6 +22,9 @@ func NewRouter(db *sql.DB, querier models.Querier) http.Handler {
 	api := r.Group("/api")
 	api.GET("/recipes", tx(listRecipes))
 	api.POST("/recipes", tx(createRecipe))
+	api.GET("/recipes/:recipeId", tx(readRecipe))
+	api.PUT("/recipes/:recipeId", tx(updateRecipe))
+	api.DELETE("/recipes/:recipeId", tx(deleteRecipe))
 
 	return r
 }

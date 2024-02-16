@@ -10,6 +10,7 @@ SRC.WIRE            = cmd/plaincooking/wire.go
 GEN.SQLC            = internal/database/models
 GEN.SQLC.QUERIES    = $(GEN.SQLC)/queries.sql_gen.go
 SRC.SQLC.MIGRATIONS = $(wildcard internal/database/migrations/*.sql)
+SRC.SQLC.QUERIES    = internal/database/queries.sql
 GEN.SWAGGER         = $(TARGET)/swagger.json
 SRC.SWAGGER         = $(wildcard internal/web/*.go)
 

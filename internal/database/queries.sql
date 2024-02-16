@@ -15,5 +15,23 @@ insert into "recipes" (
 
 -- name: ListRecipes :many
 select *
-from "recipes" r
-order by r.title asc ;
+from "recipes" "r"
+order by "r"."title" asc ;
+
+-- name: ReadRecipe :one
+select *
+from "recipes" "r"
+where "r"."id" = sqlc.arg(id) ;
+
+-- name: UpdateRecipe :one
+update "recipes"
+set "updated_at" = sqlc.arg(updated_at) ,
+	"slug" = sqlc.arg(slug) ,
+	"title" = sqlc.arg(title)
+where "id" = sqlc.arg(id)
+returning * ;
+
+-- name: DeleteRecipe :one
+delete from "recipes"
+where "id" = sqlc.arg(id)
+returning * ;
