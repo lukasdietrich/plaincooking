@@ -16,6 +16,8 @@ type handlerFunc func(echo.Context, models.Querier) error
 func NewRouter(db *sql.DB, querier models.Querier) http.Handler {
 	r := echo.New()
 	r.Use(middleware.Recover())
+	r.Use(logError())
+	r.Use(handleBusinessError())
 
 	tx := makeTransactionWrapper(db)
 

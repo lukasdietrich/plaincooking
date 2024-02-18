@@ -8,3 +8,6 @@ create table "recipes" (
 
 	primary key ( "id" )
 ) ;
+
+create unique index "idx_uniq_recipes_slug"
+	on "recipes" ( "slug" ) ;

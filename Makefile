@@ -37,13 +37,19 @@ go-vet:
 
 .PHONY: migrate-new
 migrate-new:
-	$(MIGRATE) create -ext sql -dir internal/database/migrations -seq $(name)
+	$(MIGRATE) create \
+		-ext sql \
+		-dir internal/database/migrations \
+		-seq $(name)
 
 $(TARGET):
 	mkdir -p $(TARGET)
 
 $(BINARY): $(GEN.SQLC.QUERIES) $(GEN.WIRE) $(SRC.GO) | $(TARGET)
-	$(GO) build -v -o $(BINARY) ./cmd/plaincooking
+	$(GO) build \
+		-v \
+		-o $(BINARY) \
+		./cmd/plaincooking
 
 $(GEN.WIRE): $(SRC.WIRE)
 	$(WIRE) gen ./cmd/plaincooking
@@ -52,4 +58,9 @@ $(GEN.SQLC.QUERIES): $(SRC.SQLC.QUERIES) $(SRC.SQLC.MIGRATIONS)
 	$(SQLC) generate
 
 $(GEN.SWAGGER): $(SRC.SWAGGER) | $(TARGET)
-	$(SWAG) init --dir internal/web --generalInfo api.go --outputTypes json --output $(TARGET)
+	$(SWAG) init \
+		--dir internal/web \
+		--parseDependency \
+		--generalInfo api.go \
+		--outputTypes json \
+		--output $(TARGET)

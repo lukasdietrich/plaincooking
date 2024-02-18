@@ -27,7 +27,7 @@ type RecipeDto struct {
 // @tags     recipes
 // @router   /recipes  [get]
 // @produce  application/json
-// @success  200  {object}  []RecipeDto
+// @success  200  {array}  RecipeDto
 func listRecipes(ctx echo.Context, querier models.Querier) error {
 	recipeSlice, err := querier.ListRecipes(ctx.Request().Context())
 	if err != nil {
@@ -53,6 +53,9 @@ type CreateRecipeResponse struct {
 // @produce  application/json
 // @param    request body   CreateRecipeRequest  true  "Recipe"
 // @success  200  {object}  CreateRecipeResponse
+// @failure  400  {object}  echo.HTTPError
+// @failure  409  {object}  echo.HTTPError
+// @failure  422  {object}  echo.HTTPError
 func createRecipe(ctx echo.Context, querier models.Querier) error {
 	var req CreateRecipeRequest
 	if err := ctx.Bind(&req); err != nil {
@@ -86,6 +89,8 @@ type ReadRecipeRequest struct {
 // @produce  application/json
 // @param    recipeId path  string     true  "Recipe ID"
 // @success  200  {object}  RecipeDto
+// @failure  400  {object}  echo.HTTPError
+// @failure  404  {object}  echo.HTTPError
 func readRecipe(ctx echo.Context, querier models.Querier) error {
 	var req ReadRecipeRequest
 	if err := ctx.Bind(&req); err != nil {
@@ -122,6 +127,10 @@ type UpdateRecipeResponse struct {
 // @param    recipeId path  string                true  "Recipe ID"
 // @param    request body   UpdateRecipeRequest   true  "Recipe"
 // @success  200  {object}  UpdateRecipeResponse
+// @failure  400  {object}  echo.HTTPError
+// @failure  404  {object}  echo.HTTPError
+// @failure  409  {object}  echo.HTTPError
+// @failure  422  {object}  echo.HTTPError
 func updateRecipe(ctx echo.Context, querier models.Querier) error {
 	var req UpdateRecipeRequest
 	if err := ctx.Bind(&req); err != nil {
@@ -160,6 +169,8 @@ type DeleteRecipeResponse struct {
 // @produce  application/json
 // @param    recipeId path  string                true  "Recipe ID"
 // @success  200  {object}  DeleteRecipeResponse
+// @failure  400  {object}  echo.HTTPError
+// @failure  404  {object}  echo.HTTPError
 func deleteRecipe(ctx echo.Context, querier models.Querier) error {
 	var req DeleteRecipeRequest
 	if err := ctx.Bind(&req); err != nil {
