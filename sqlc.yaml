@@ -21,3 +21,7 @@ sql:
             go_type:
               import: github.com/rs/xid
               type: ID
+          - column: '*.*_id'
+            go_type:
+              import: github.com/rs/xid
+              type: ID

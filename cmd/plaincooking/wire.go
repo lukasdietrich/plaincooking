@@ -10,19 +10,26 @@ import (
 
 	"github.com/lukasdietrich/plaincooking/internal/database"
 	"github.com/lukasdietrich/plaincooking/internal/database/models"
+	"github.com/lukasdietrich/plaincooking/internal/service"
 	"github.com/lukasdietrich/plaincooking/internal/web"
 )
 
 func InjectServer() (*http.Server, error) {
 	wire.Build(
+		// Web
 		web.NewServer,
 		web.NewRouter,
+		web.NewRecipeController,
 
+		// Service
+		service.NewParser,
+		service.NewRecipeService,
+
+		// Database
 		database.Open,
-		models.New,
+		database.NewQuerier,
 
 		wire.Bind(new(models.DBTX), new(*sql.DB)),
-		wire.Bind(new(models.Querier), new(*models.Queries)),
 	)
 
 	return nil, nil

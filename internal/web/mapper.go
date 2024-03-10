@@ -15,12 +15,9 @@ func mapSlice[Src, Dst any](sourceSlice []Src, fn func(Src) Dst) []Dst {
 	return destinationSlice
 }
 
-func mapRecipeDto(entity models.Recipes) RecipeDto {
-	return RecipeDto{
-		ID:        entity.ID,
-		CreatedAt: entity.CreatedAt,
-		UpdatedAt: entity.UpdatedAt,
-		Title:     entity.Title,
-		Slug:      entity.Slug,
+func mapRecipeMetadataDto(entity models.RecipeMetadata) RecipeMetadataDto {
+	return RecipeMetadataDto{
+		ID:    entity.RecipeID,
+		Title: entity.Title,
 	}
 }

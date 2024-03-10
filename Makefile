@@ -61,6 +61,6 @@ $(GEN.SWAGGER): $(SRC.SWAGGER) | $(TARGET)
 	$(SWAG) init \
 		--dir internal/web \
 		--parseDependency \
-		--generalInfo api.go \
+		--generalInfo controller.go \
 		--outputTypes json \
 		--output $(TARGET)
