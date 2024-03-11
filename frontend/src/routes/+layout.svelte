@@ -1,5 +1,6 @@
 <script>
-	import '@unocss/reset/tailwind-compat.css';
+	import '@unocss/reset/tailwind.css';
+	import 'lucide-static/font/lucide.css';
 
 	import Header from './Header.svelte';
 </script>
