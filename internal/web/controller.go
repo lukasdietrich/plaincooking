@@ -14,6 +14,8 @@ const (
 	MIMEMarkdown = "text/markdown"
 )
 
+type ApiError echo.HTTPError // @name ApiError
+
 // @title     PlainCooking API
 // @version   0.1
 // @host      http://localhost:8080
@@ -32,9 +34,10 @@ func NewRecipeController(recipes *service.RecipeService) *RecipeController {
 type RecipeMetadataDto struct {
 	ID    xid.ID `json:"id"`
 	Title string `json:"title"`
-}
+} // @name RecipeMetadata
 
 // @summary  List recipes
+// @id       listRecipes
 // @tags     recipes
 // @router   /recipes  [get]
 // @produce  application/json
@@ -50,16 +53,18 @@ func (c *RecipeController) List(ctx echo.Context) error {
 
 type CreateRecipeResponse struct {
 	ID xid.ID `json:"id"`
-}
+} // @name CreateRecipeResponse
 
 // @summary  Create a new recipe
+// @id       createRecipe
 // @tags     recipes
 // @router   /recipes  [post]
 // @accept   text/markdown
 // @produce  application/json
+// @param    content  body  string  true  "Recipe content"
 // @success  201  {object}  CreateRecipeResponse
-// @failure  400  {object}  echo.HTTPError
-// @failure  422  {object}  echo.HTTPError
+// @failure  400  {object}  ApiError
+// @failure  422  {object}  ApiError
 func (c *RecipeController) Create(ctx echo.Context) error {
 	content, err := c.readMarkdownRequest(ctx)
 	if err != nil {
@@ -79,13 +84,14 @@ type ReadRecipeRequest struct {
 }
 
 // @summary  Read a recipe
+// @id       readRecipe
 // @tags     recipes
 // @router   /recipes/{recipeId}  [get]
 // @produce  text/markdown
 // @param    recipeId path  string  true  "Recipe ID"
-// @success  200  {object}  RecipeMetadataDto
-// @failure  400  {object}  echo.HTTPError
-// @failure  404  {object}  echo.HTTPError
+// @success  200  {string}  string
+// @failure  400  {object}  ApiError
+// @failure  404  {object}  ApiError
 func (c *RecipeController) Read(ctx echo.Context) error {
 	var req ReadRecipeRequest
 	if err := ctx.Bind(&req); err != nil {
@@ -105,15 +111,17 @@ type UpdateRecipeRequest struct {
 }
 
 // @summary  Update a recipe
+// @id       updateRecipe
 // @tags     recipes
 // @router   /recipes/{recipeId}  [put]
 // @accept   text/markdown
 // @param    recipeId path  string  true  "Recipe ID"
+// @param    content  body  string  true  "Recipe content"
 // @success  204
-// @failure  400  {object}  echo.HTTPError
-// @failure  404  {object}  echo.HTTPError
-// @failure  409  {object}  echo.HTTPError
-// @failure  422  {object}  echo.HTTPError
+// @failure  400  {object}  ApiError
+// @failure  404  {object}  ApiError
+// @failure  409  {object}  ApiError
+// @failure  422  {object}  ApiError
 func (c *RecipeController) Update(ctx echo.Context) error {
 	var req UpdateRecipeRequest
 	if err := ctx.Bind(&req); err != nil {
@@ -137,12 +145,13 @@ type DeleteRecipeRequest struct {
 }
 
 // @summary  Delete a recipe
+// @id       deleteRecipe
 // @tags     recipes
 // @router   /recipes/{recipeId}  [delete]
 // @param    recipeId path  string  true  "Recipe ID"
 // @success  204
-// @failure  400  {object}  echo.HTTPError
-// @failure  404  {object}  echo.HTTPError
+// @failure  400  {object}  ApiError
+// @failure  404  {object}  ApiError
 func (c *RecipeController) Delete(ctx echo.Context) error {
 	var req DeleteRecipeRequest
 	if err := ctx.Bind(&req); err != nil {

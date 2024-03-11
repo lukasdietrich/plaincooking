@@ -5,6 +5,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"github.com/lukasdietrich/plaincooking/frontend"
 )
 
 func NewRouter(recipes *RecipeController) http.Handler {
@@ -14,6 +15,11 @@ func NewRouter(recipes *RecipeController) http.Handler {
 	r.Use(middleware.Recover())
 	r.Use(logError())
 	r.Use(handleBusinessError())
+	r.Use(middleware.StaticWithConfig(middleware.StaticConfig{
+		HTML5:      true,
+		Root:       "build",
+		Filesystem: http.FS(frontend.Files()),
+	}))
 
 	api := r.Group("/api")
 	api.GET("/recipes", recipes.List)
