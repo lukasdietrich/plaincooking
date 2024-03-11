@@ -1,7 +1,8 @@
 <script lang="ts">
 	import type { PageData } from './$types';
+	import { Renderer } from '$lib/components/recipe/renderer';
 
 	export let data: PageData;
 </script>
 
-<pre>{data.content}</pre>
+<Renderer content={data.content}></Renderer>

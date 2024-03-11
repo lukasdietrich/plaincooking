@@ -35,6 +35,7 @@
 	},
 	"dependencies": {
 		"@codemirror/lang-markdown": "^6.2.4",
-		"codemirror": "^6.0.1"
+		"codemirror": "^6.0.1",
+		"marked": "^12.0.1"
 	}
 }
