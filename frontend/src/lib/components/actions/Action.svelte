@@ -15,6 +15,6 @@
 <style>
 	a,
 	button {
-		--at-apply: block px-5 py-3 hover:bg-emerald-700;
+		--at-apply: 'block px-5 py-3 transition-colors hover:bg-emerald-700';
 	}
 </style>
