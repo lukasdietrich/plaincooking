@@ -13,6 +13,7 @@ func NewRouter(recipes *RecipeController) http.Handler {
 	r.Binder = new(binder)
 
 	r.Use(middleware.Recover())
+	r.Use(middleware.Gzip())
 	r.Use(logError())
 	r.Use(handleBusinessError())
 	r.Use(middleware.StaticWithConfig(middleware.StaticConfig{
@@ -25,6 +26,7 @@ func NewRouter(recipes *RecipeController) http.Handler {
 	api.GET("/recipes", recipes.List)
 	api.POST("/recipes", recipes.Create)
 	api.GET("/recipes/:recipeId", recipes.Read)
+	api.GET("/recipes/:recipeId/metadata", recipes.ReadMetadata)
 	api.PUT("/recipes/:recipeId", recipes.Update)
 	api.DELETE("/recipes/:recipeId", recipes.Delete)
 

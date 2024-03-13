@@ -35,6 +35,15 @@ func (s *RecipeService) Read(ctx context.Context, id xid.ID) ([]byte, error) {
 	return recipe.Content, nil
 }
 
+func (s *RecipeService) ReadMetadata(ctx context.Context, id xid.ID) (*models.RecipeMetadata, error) {
+	metadata, err := s.querier.ReadRecipeMetadata(ctx, models.ReadRecipeMetadataParams{RecipeID: id})
+	if err != nil {
+		return nil, err
+	}
+
+	return &metadata, nil
+}
+
 func (s *RecipeService) Create(ctx context.Context, content []byte) (xid.ID, error) {
 	querier, tx, err := s.querier.Begin(ctx)
 	if err != nil {

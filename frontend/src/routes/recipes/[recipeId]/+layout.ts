@@ -1,8 +1,16 @@
-import type { PageLoad } from './$types';
+import type { LayoutLoad } from './$types';
 import { client } from '$lib';
 
-export const load: PageLoad = async ({ params }) => {
+export const load: LayoutLoad = async ({ params }) => {
+	const [metadata, content] = await Promise.all([
+		client.recipes.readRecipeMetadata(params.recipeId),
+		client.recipes.readRecipe(params.recipeId)
+	]);
+
 	return {
-		content: await client.recipes.readRecipe(params.recipeId)
+		title: metadata.title,
+
+		metadata,
+		content
 	};
 };

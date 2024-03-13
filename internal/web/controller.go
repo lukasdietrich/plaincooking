@@ -106,6 +106,29 @@ func (c *RecipeController) Read(ctx echo.Context) error {
 	return ctx.Blob(http.StatusOK, MIMEMarkdown, content)
 }
 
+// @summary  Read metadata of a recipe
+// @id       readRecipeMetadata
+// @tags     recipes
+// @router   /recipes/{recipeId}/metadata  [get]
+// @produce  application/json
+// @param    recipeId path  string  true  "Recipe ID"
+// @success  200  {object}  RecipeMetadataDto
+// @failure  400  {object}  ApiError
+// @failure  404  {object}  ApiError
+func (c *RecipeController) ReadMetadata(ctx echo.Context) error {
+	var req ReadRecipeRequest
+	if err := ctx.Bind(&req); err != nil {
+		return err
+	}
+
+	metadata, err := c.recipes.ReadMetadata(ctx.Request().Context(), req.ID)
+	if err != nil {
+		return err
+	}
+
+	return ctx.JSON(http.StatusOK, mapRecipeMetadataDto(*metadata))
+}
+
 type UpdateRecipeRequest struct {
 	ID xid.ID `json:"-" param:"recipeId"`
 }
