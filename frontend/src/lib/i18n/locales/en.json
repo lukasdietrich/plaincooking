@@ -1,0 +1,11 @@
+{
+	"actions": {
+		"back": "back",
+		"edit": "edit",
+		"save": "save"
+	},
+
+	"recipe": {
+		"step": "Step {n}"
+	}
+}

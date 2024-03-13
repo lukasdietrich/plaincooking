@@ -4,6 +4,7 @@
 	import { resolveRoute } from '$app/paths';
 	import { page } from '$app/stores';
 	import { client } from '$lib';
+	import { t } from '$lib/i18n';
 	import { onMount } from 'svelte';
 	import { basicSetup, EditorView } from 'codemirror';
 	import { markdown } from '@codemirror/lang-markdown';
@@ -43,11 +44,11 @@
 </script>
 
 <ActionPortal>
-	<Action href={resolveRoute('/recipes/[recipeId]', $page.params)}>
+	<Action href={resolveRoute('/recipes/[recipeId]', $page.params)} title={$t('actions.back')}>
 		<i class="icon-undo-2"></i>
 	</Action>
 
-	<Action on:click={save}>
+	<Action on:click={save} title={$t('actions.save')}>
 		<i class="icon-save"></i>
 	</Action>
 </ActionPortal>

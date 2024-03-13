@@ -1,13 +1,14 @@
 <script lang="ts">
 	export let href: string | null = null;
+	export let title: string | null = null;
 </script>
 
 {#if href}
-	<a {href} on:click>
+	<a {href} {title} on:click>
 		<slot />
 	</a>
 {:else}
-	<button on:click>
+	<button {title} on:click>
 		<slot />
 	</button>
 {/if}
