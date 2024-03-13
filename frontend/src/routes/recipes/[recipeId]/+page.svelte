@@ -2,11 +2,13 @@
 	import type { PageData } from './$types';
 	import { page } from '$app/stores';
 	import { resolveRoute } from '$app/paths';
-	import { Renderer } from '$lib/components/recipe/renderer';
-	import ActionPortal from '$lib/components/actions/ActionPortal.svelte';
-	import Action from '$lib/components/actions/Action.svelte';
+	import { parse } from '$lib/recipe';
+	import { Recipe } from '$lib/components/recipe';
+	import { ActionPortal, Action } from '$lib/components/actions';
 
 	export let data: PageData;
+
+	$: recipe = parse(data.content);
 </script>
 
 <ActionPortal>
@@ -19,4 +21,4 @@
 	</Action>
 </ActionPortal>
 
-<Renderer content={data.content}></Renderer>
+<Recipe {recipe} />

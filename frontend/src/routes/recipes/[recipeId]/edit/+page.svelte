@@ -7,8 +7,7 @@
 	import { onMount } from 'svelte';
 	import { basicSetup, EditorView } from 'codemirror';
 	import { markdown } from '@codemirror/lang-markdown';
-	import ActionPortal from '$lib/components/actions/ActionPortal.svelte';
-	import Action from '$lib/components/actions/Action.svelte';
+	import { ActionPortal, Action } from '$lib/components/actions';
 
 	export let data: PageData;
 

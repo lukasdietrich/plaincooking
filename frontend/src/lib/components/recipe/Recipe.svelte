@@ -1,16 +1,14 @@
 <script lang="ts">
-	import { parse } from './parser';
-	import MarkdownToken from './MarkdownToken.svelte';
+	import type { Recipe } from '$lib/recipe';
+	import TokenRenderer from './TokenRenderer.svelte';
 	import Step from './Step.svelte';
 
-	export let content: string;
-
-	$: recipe = parse(content);
+	export let recipe: Recipe;
 </script>
 
 <article class="flex flex-col space-y-5">
 	<header>
-		<MarkdownToken token={recipe.intro} />
+		<TokenRenderer token={recipe.intro} />
 	</header>
 
 	{#each recipe.steps as tokens, index}
