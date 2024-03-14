@@ -5,37 +5,13 @@
 	import { page } from '$app/stores';
 	import { client } from '$lib';
 	import { t } from '$lib/i18n';
-	import { onMount } from 'svelte';
-	import { basicSetup, EditorView } from 'codemirror';
-	import { markdown } from '@codemirror/lang-markdown';
 	import { ActionPortal, Action } from '$lib/components/actions';
+	import { Editor } from '$lib/components/editor';
 
 	export let data: PageData;
-
-	let editorHost!: HTMLElement;
-	let editor: EditorView;
-
-	onMount(() => {
-		const theme = EditorView.theme({
-			'.cm-content': {
-				fontFamily: 'inherit',
-				fontSize: 'inherit'
-			},
-
-			'&.cm-focused': {
-				outline: 'none'
-			}
-		});
-
-		editor = new EditorView({
-			doc: data.content,
-			extensions: [basicSetup, theme, EditorView.lineWrapping, markdown()],
-			parent: editorHost
-		});
-	});
+	let content = data.content;
 
 	async function save() {
-		const content = editor.state.doc.toString();
 		const recipeId = $page.params.recipeId;
 
 		await client.recipes.updateRecipe(recipeId, content);
@@ -53,4 +29,6 @@
 	</Action>
 </ActionPortal>
 
-<div class="bg-gray-50 font-mono text-lg" bind:this={editorHost}></div>
+<div class="bg-gray-50 font-mono text-lg">
+	<Editor bind:value={content} />
+</div>
