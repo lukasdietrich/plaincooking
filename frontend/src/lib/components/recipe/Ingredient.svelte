@@ -10,8 +10,12 @@
 	$: isFraction = token.quantity?.d !== 1;
 </script>
 
-<div class="inline-block select-none bg-emerald-100 rounded">
-	<label for={id} class="inline-flex font-semibold px-2 py-1 thickness-1" class:line-through={done}>
+<div class="inline-block items-center select-none bg-emerald-100 rounded-full my-1 px-1">
+	<label
+		for={id}
+		class="inline-flex font-semibold px-2 py-0.5 thickness-1"
+		class:line-through={done}
+	>
 		{#if token.quantity}
 			<span class:diagonal-fractions={isFraction}>
 				{token.quantity.n}{#if isFraction}/{token.quantity.d}{/if}

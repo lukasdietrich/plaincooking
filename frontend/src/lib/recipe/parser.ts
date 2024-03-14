@@ -15,11 +15,14 @@ export function parseRecipe(src: string): Recipe {
 	const tokens = processTokenArray(marked.lexer(content));
 	const [intro, ...steps] = splitChunks(tokens, isHorizontalRule);
 
-	return {
-		metadata: matter ?? {},
-		intro,
-		steps
+	const metadata = {
+		servings: 1,
+		tags: [],
+
+		...matter
 	};
+
+	return { metadata, intro, steps };
 }
 
 function isHorizontalRule({ type }: Token): boolean {

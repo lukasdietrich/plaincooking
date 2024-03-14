@@ -50,7 +50,9 @@ export type Token =
 export type Section = Token[];
 
 interface Metadata {
-	servings?: number;
+	servings: number;
+	tags: string[];
+	source?: string;
 }
 
 export interface Recipe {

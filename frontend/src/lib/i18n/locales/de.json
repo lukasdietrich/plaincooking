@@ -6,6 +6,7 @@
 	},
 
 	"recipe": {
-		"step": "Schritt {n}"
+		"step": "Schritt {n}",
+		"servings": "{n} Portionen"
 	}
 }
