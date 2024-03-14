@@ -1,5 +1,7 @@
 import type { Extension } from '@codemirror/state';
-import { basicSetup, EditorView } from 'codemirror';
+import { basicSetup } from 'codemirror';
+import { EditorView, keymap } from '@codemirror/view';
+import { indentWithTab } from '@codemirror/commands';
 import { markdown } from '@codemirror/lang-markdown';
 import { frontmatter } from './plugins/frontmatter';
 
@@ -19,6 +21,7 @@ export function create(element: HTMLElement, content: string, extensions: Extens
 		doc: content,
 		extensions: [
 			basicSetup,
+			keymap.of([indentWithTab]),
 			theme,
 			markdown({
 				extensions: frontmatter
