@@ -1,2 +1,2 @@
 export * from './model';
-export { parse } from './parser';
+export { parseRecipe as parse } from './parser';

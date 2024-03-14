@@ -49,7 +49,12 @@ export type Token =
 	| Tokens.Text;
 export type Section = Token[];
 
+interface Metadata {
+	servings?: number;
+}
+
 export interface Recipe {
+	metadata: Metadata;
 	intro: Section;
 	steps: Section[];
 }

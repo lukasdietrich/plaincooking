@@ -2,6 +2,7 @@ import type { Token as MarkedToken } from 'marked';
 import type { Recipe, Token, Tokens } from './model';
 import { Marked } from 'marked';
 import { create, all } from 'mathjs';
+import { parseFrontmatter } from './frontmatter';
 
 const math = create(all, {
 	number: 'Fraction'
@@ -9,11 +10,16 @@ const math = create(all, {
 
 const marked = new Marked();
 
-export function parse(src: string): Recipe {
-	const tokens = processTokenArray(marked.lexer(src));
+export function parseRecipe(src: string): Recipe {
+	const { matter, content } = parseFrontmatter(src);
+	const tokens = processTokenArray(marked.lexer(content));
 	const [intro, ...steps] = splitChunks(tokens, isHorizontalRule);
 
-	return { intro, steps };
+	return {
+		metadata: matter ?? {},
+		intro,
+		steps
+	};
 }
 
 function isHorizontalRule({ type }: Token): boolean {

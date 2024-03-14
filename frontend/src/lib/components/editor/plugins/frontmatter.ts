@@ -3,9 +3,7 @@ import { parseMixed } from '@lezer/common';
 import { styleTags, tags } from '@lezer/highlight';
 import { foldNodeProp, foldInside, StreamLanguage } from '@codemirror/language';
 import { yaml } from '@codemirror/legacy-modes/mode/yaml';
-
-const FENCE_START = '---';
-const FENCE_END = '...';
+import { FENCE_START, FENCE_END } from '$lib/recipe/frontmatter';
 
 const isFence = (line: Line, fence: string) => {
 	return line.text === fence;
