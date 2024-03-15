@@ -51,3 +51,42 @@ Add some spice
 		}
 	}
 }
+
+func TestParserWithValidFrontmatter(t *testing.T) {
+	const input = `---
+servings: 3
+tags:
+  - meat
+source: https://example.org
+...
+
+# Recipe`
+
+	expectedMeta := &RecipeMetadata{
+		RecipeFrontmatter: &RecipeFrontmatter{
+			Servings: 3,
+			Tags:     []string{"meat"},
+			Source:   "https://example.org",
+		},
+		Title: "Recipe",
+	}
+
+	p := NewParser()
+
+	meta, err := p.ParseRecipe([]byte(input))
+	assert.NoError(t, err)
+	assert.EqualValues(t, expectedMeta, meta)
+}
+
+func TestParserWithInvalidFrontmatter(t *testing.T) {
+	const input = `---
+unknown: field
+...
+
+# Recipe`
+	p := NewParser()
+
+	meta, err := p.ParseRecipe([]byte(input))
+	assert.Error(t, err)
+	assert.Nil(t, meta)
+}
