@@ -10,22 +10,44 @@ import (
 func TestParserFindTitle(t *testing.T) {
 	p := NewParser()
 
-	for input, expectedTitle := range map[string]string{
-		`
+	for _, testcase := range []struct {
+		input         string
+		expectedTitle string
+		expectedError error
+	}{
+		{
+			input: `
 # Very healthy recipe
-`: "Very healthy recipe",
-		`
+`,
+			expectedTitle: "Very healthy recipe",
+		},
+		{
+			input: `
 Pizza
 =====
-`: "Pizza",
-		`
+`,
+			expectedTitle: "Pizza",
+		},
+		{
+			input: `
 ## Burger
 
-`: "",
+Add some spice
+`,
+			expectedError: ErrMissingTitle,
+		},
 	} {
-		meta, err := p.ParseRecipe([]byte(input))
-		assert.NoError(t, err)
-		require.NotNil(t, meta)
-		assert.Equal(t, expectedTitle, meta.Title)
+		meta, err := p.ParseRecipe([]byte(testcase.input))
+
+		if testcase.expectedError != nil {
+			assert.Nil(t, meta)
+			assert.ErrorIs(t, err, testcase.expectedError)
+		}
+
+		if testcase.expectedTitle != "" {
+			assert.NoError(t, err)
+			require.NotNil(t, meta)
+			assert.Equal(t, testcase.expectedTitle, meta.Title)
+		}
 	}
 }
