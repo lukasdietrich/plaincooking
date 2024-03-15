@@ -10,6 +10,7 @@ import (
 
 	"github.com/lukasdietrich/plaincooking/internal/database"
 	"github.com/lukasdietrich/plaincooking/internal/database/models"
+	"github.com/lukasdietrich/plaincooking/internal/parser"
 	"github.com/lukasdietrich/plaincooking/internal/service"
 	"github.com/lukasdietrich/plaincooking/internal/web"
 )
@@ -22,8 +23,10 @@ func InjectServer() (*http.Server, error) {
 		web.NewRecipeController,
 
 		// Service
-		service.NewParser,
 		service.NewRecipeService,
+
+		// Parser
+		parser.NewParser,
 
 		// Database
 		database.Open,

@@ -1,4 +1,4 @@
-package service
+package parser
 
 import (
 	"errors"
@@ -44,9 +44,13 @@ func (p *RecipeParser) ParseRecipe(content []byte) (*RecipeMetadata, error) {
 }
 
 func (p *RecipeParser) findTitle(recipe *RecipeMetadata, content []byte, node ast.Node) error {
-	err := ast.Walk(node, func(n ast.Node, entering bool) (ast.WalkStatus, error) {
+	err := ast.Walk(node, func(n ast.Node, _ bool) (ast.WalkStatus, error) {
 		if heading, ok := n.(*ast.Heading); ok && heading.Level == 1 {
 			recipe.Title = string(n.Text(content))
+			return ast.WalkStop, nil
+		}
+
+		if _, ok := n.(*ast.ThematicBreak); ok {
 			return ast.WalkStop, nil
 		}
 

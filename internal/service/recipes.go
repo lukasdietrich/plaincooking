@@ -8,14 +8,15 @@ import (
 
 	"github.com/lukasdietrich/plaincooking/internal/database"
 	"github.com/lukasdietrich/plaincooking/internal/database/models"
+	"github.com/lukasdietrich/plaincooking/internal/parser"
 )
 
 type RecipeService struct {
 	querier database.Querier
-	parser  *RecipeParser
+	parser  *parser.RecipeParser
 }
 
-func NewRecipeService(querier database.Querier, parser *RecipeParser) *RecipeService {
+func NewRecipeService(querier database.Querier, parser *parser.RecipeParser) *RecipeService {
 	return &RecipeService{
 		querier: querier,
 		parser:  parser,
