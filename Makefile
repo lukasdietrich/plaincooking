@@ -73,10 +73,10 @@ $(GEN.SWAGGER): $(SRC.SWAGGER) | $(TARGET)
 		--outputTypes json \
 		--output $(TARGET)
 
-$(GEN.FRONTEND): $(GEN.CLIENT)
+$(GEN.FRONTEND): $(GEN.CLIENT) $(GEN.NODE_MODULES)
 	$(NPM) run build
 
-$(GEN.CLIENT): $(GEN.SWAGGER)
+$(GEN.CLIENT): $(GEN.SWAGGER) $(GEN.NODE_MODULES)
 	$(OPENAPI_CODEGEN) \
 		--input $(abspath $(GEN.SWAGGER)) \
 		--output $(abspath $(GEN.CLIENT)) \
