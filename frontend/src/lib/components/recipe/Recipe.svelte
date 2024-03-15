@@ -3,10 +3,22 @@
 	import { t } from '$lib/i18n';
 	import TokenRenderer from './TokenRenderer.svelte';
 	import Step from './Step.svelte';
+	import ShoppingList from './ShoppingList.svelte';
+
+	enum Mode {
+		Steps,
+		ShoppingList
+	}
 
 	export let recipe: Recipe;
 
+	let mode: Mode = Mode.Steps;
+
 	$: metadata = recipe.metadata;
+
+	function toggleMode() {
+		mode = mode === Mode.Steps ? Mode.ShoppingList : Mode.Steps;
+	}
 </script>
 
 <article class="flex flex-col space-y-5">
@@ -25,12 +37,22 @@
 					<span>{tag}</span>
 				</div>
 			{/each}
+
+			<div class="!ml-auto">
+				<button class="bg-gray-200 rounded-full px-3 py-1" on:click={toggleMode}>
+					<i class="icon-shopping-cart"></i>
+				</button>
+			</div>
 		</div>
 
 		<TokenRenderer token={recipe.intro} />
 	</header>
 
-	{#each recipe.steps as tokens, index}
-		<Step {index} {tokens} />
-	{/each}
+	{#if mode === Mode.Steps}
+		{#each recipe.steps as tokens, index}
+			<Step {index} {tokens} />
+		{/each}
+	{:else}
+		<ShoppingList {recipe} />
+	{/if}
 </article>
