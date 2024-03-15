@@ -49,7 +49,7 @@ export type Token =
 	| Tokens.Text;
 export type Section = Token[];
 
-interface Metadata {
+export interface Metadata {
 	servings: number;
 	tags: string[];
 	source?: string;

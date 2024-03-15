@@ -3,12 +3,12 @@ import { parse as parseYaml } from 'yaml';
 export const FENCE_START = '---';
 export const FENCE_END = '...';
 
-export interface Frontmatter {
-	matter?: any;
+export interface Frontmatter<M> {
+	matter?: M;
 	content: string;
 }
 
-export function parseFrontmatter(text: string): Frontmatter {
+export function parseFrontmatter<M>(text: string): Frontmatter<M> {
 	const lines = splitLines(text);
 	const [first, ...rest] = lines;
 
