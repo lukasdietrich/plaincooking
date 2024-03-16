@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { EditorView, ViewUpdate } from '@codemirror/view';
+	import type { ViewUpdate } from '@codemirror/view';
+	import { EditorView } from '@codemirror/view';
 	import { onMount, onDestroy } from 'svelte';
 	import { create } from './codemirror';
 
