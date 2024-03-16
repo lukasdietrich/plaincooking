@@ -9,7 +9,7 @@
 	let done = false;
 </script>
 
-<div class="inline-block items-center select-none bg-emerald-100 rounded-full my-1 px-1">
+<div class="inline-block select-none bg-emerald-100 rounded-full my-1 px-1">
 	<label for={id} class="font-semibold px-2 py-0.5 thickness-1" class:line-through={done}>
 		{#if token.quantity}
 			<FractionalQuantity quantity={token.quantity} unit={token.unit} />

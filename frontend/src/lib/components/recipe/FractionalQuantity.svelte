@@ -4,12 +4,22 @@
 	export let quantity: Fraction;
 	export let unit: string | undefined;
 
-	$: isFraction = quantity.d !== 1;
+	$: wholeNumbers = Math.floor(quantity.n / quantity.d);
+	$: numerator = quantity.n % quantity.d;
+	$: denominator = quantity.d;
 </script>
 
-<span class:diagonal-fractions={isFraction}>
-	{quantity.n}{#if isFraction}/{quantity.d}{/if}
-</span>
+{#if wholeNumbers > 0}
+	<span>
+		{wholeNumbers}
+	</span>
+{/if}
+
+{#if numerator !== 0}
+	<span class="text-sm">
+		<sup>{numerator}</sup>/<sub>{denominator}</sub>
+	</span>
+{/if}
 
 {#if unit}
 	<span>
