@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Fraction } from 'mathjs';
+	import type Fraction from 'fraction.js';
 
 	export let quantity: Fraction;
 	export let unit: string | undefined;

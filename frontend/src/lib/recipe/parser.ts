@@ -1,12 +1,8 @@
 import type { Token as MarkedToken } from 'marked';
 import type { Recipe, Metadata, Token, Tokens } from './model';
+import Fraction from 'fraction.js';
 import { Marked } from 'marked';
-import { create, all } from 'mathjs';
 import { parseFrontmatter } from './frontmatter';
-
-const math = create(all, {
-	number: 'Fraction'
-});
 
 const marked = new Marked();
 
@@ -121,7 +117,7 @@ function parseIngredient(text: string): Tokens.Ingredient {
 
 	return {
 		type: 'ingredient',
-		quantity: quantity && math.evaluate(quantity),
+		quantity: quantity && new Fraction(quantity),
 		unit,
 		ingredient
 	};

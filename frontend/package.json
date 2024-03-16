@@ -37,9 +37,9 @@
 		"@codemirror/lang-markdown": "^6.2.4",
 		"@codemirror/legacy-modes": "^6.3.3",
 		"codemirror": "^6.0.1",
+		"fraction.js": "^4.3.7",
 		"lucide-static": "^0.357.0",
 		"marked": "^12.0.1",
-		"mathjs": "^12.4.1",
 		"svelte-i18n": "^4.0.0",
 		"svelte-portal": "^2.2.1",
 		"yaml": "^2.4.1"
