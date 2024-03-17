@@ -42,7 +42,7 @@ func (s *RecipeService) Create(ctx context.Context, content []byte) (xid.ID, err
 		return xid.NilID(), err
 	}
 
-	defer tx.Rollback()
+	defer tx.Rollback() // nolint:errcheck
 
 	meta, err := s.parser.ParseRecipe(content)
 	if err != nil {
@@ -81,7 +81,7 @@ func (s *RecipeService) Update(ctx context.Context, id xid.ID, content []byte) e
 		return err
 	}
 
-	defer tx.Rollback()
+	defer tx.Rollback() // nolint:errcheck
 
 	meta, err := s.parser.ParseRecipe(content)
 	if err != nil {

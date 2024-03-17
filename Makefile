@@ -83,4 +83,4 @@ $(GEN.CLIENT): $(GEN.SWAGGER) $(GEN.NODE_MODULES)
 		--name ApiClient
 
 $(GEN.NODE_MODULES):
-	$(NPM) install
+	$(NPM) ci

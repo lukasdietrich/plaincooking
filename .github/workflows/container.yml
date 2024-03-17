@@ -1,0 +1,37 @@
+name: Container Image
+
+on:
+  push:
+    workflow_dispatch:
+    branches:
+      - master
+
+permissions:
+  packages: write
+
+jobs:
+  container:
+    name: Publish container image
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - uses: redhat-actions/buildah-build@v2
+        id: build-image
+        with:
+          image: plaincooking
+          tags: ${{ github.sha }} latest
+          containerfiles: |
+            ./Containerfile
+
+      - uses: redhat-actions/push-to-registry@v2
+        with:
+          image: ${{ steps.build-image.outputs.image }}
+          tags: ${{ steps.build-image.outputs.tags }}
+          registry: ghcr.io/${{ github.repository_owner }}
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+
