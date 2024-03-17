@@ -33,12 +33,12 @@
 	<tbody>
 		{#each ingredients as token}
 			<tr class="odd:bg-slate-50">
-				<td colspan={token.quantity ? undefined : 2} class="px-2 py-1">
+				<td colspan={token.quantity ? undefined : 2} class="px-3 py-2">
 					{token.ingredient}
 				</td>
 
 				{#if token.quantity}
-					<td>
+					<td class="text-right px-3">
 						<FractionalQuantity quantity={token.quantity} unit={token.unit} />
 					</td>
 				{/if}
