@@ -117,7 +117,7 @@ function parseIngredient(text: string): Tokens.Ingredient {
 
 	return {
 		type: 'ingredient',
-		quantity: quantity && new Fraction(quantity),
+		quantity: quantity?.length ? new Fraction(quantity) : undefined,
 		unit,
 		ingredient
 	};
