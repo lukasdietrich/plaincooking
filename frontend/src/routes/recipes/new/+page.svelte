@@ -9,7 +9,7 @@
 	let content = '';
 
 	async function save() {
-		const  { id } = await client.recipes.createRecipe(content);
+		const { id } = await client.recipes.createRecipe(content);
 		await goto(resolveRoute('/recipes/[recipeId]', { recipeId: id }), { invalidateAll: true });
 	}
 </script>
