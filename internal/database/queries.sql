@@ -25,11 +25,6 @@ select *
 from "recipe_metadata"
 order by "title" asc ;
 
--- name: ReadRecipeMetadata :one
-select *
-from "recipe_metadata"
-where "recipe_id" = sqlc.arg(recipe_id) ;
-
 -- name: ReadRecipe :one
 select *
 from "recipe"

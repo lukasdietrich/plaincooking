@@ -26,7 +26,6 @@ func NewRouter(recipes *RecipeController) http.Handler {
 	api.GET("/recipes", recipes.List)
 	api.POST("/recipes", recipes.Create)
 	api.GET("/recipes/:recipeId", recipes.Read)
-	api.GET("/recipes/:recipeId/metadata", recipes.ReadMetadata)
 	api.PUT("/recipes/:recipeId", recipes.Update)
 	api.DELETE("/recipes/:recipeId", recipes.Delete)
 

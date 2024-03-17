@@ -10,6 +10,11 @@ export function parseRecipe(src: string): Recipe {
 	const { matter, content } = parseFrontmatter<Metadata>(src);
 	const tokens = processTokenArray(marked.lexer(content));
 	const [intro, ...steps] = splitChunks(tokens, isHorizontalRule);
+	const title = findTitle(intro);
+
+	if (!title) {
+		throw new Error('missing title');
+	}
 
 	const metadata = {
 		servings: 1,
@@ -18,7 +23,7 @@ export function parseRecipe(src: string): Recipe {
 		...matter
 	};
 
-	return { metadata, intro, steps };
+	return { metadata, title, intro, steps };
 }
 
 function isHorizontalRule({ type }: Token): boolean {
@@ -68,6 +73,7 @@ function processToken(token: MarkedToken): Token | undefined {
 			return {
 				type: 'heading',
 				level: token.depth,
+				text: token.text,
 				children: processTokenArray(token.tokens)
 			};
 
@@ -121,4 +127,14 @@ function parseIngredient(text: string): Tokens.Ingredient {
 		unit,
 		ingredient
 	};
+}
+
+function findTitle(tokens: Token[]): string | undefined {
+	for (const token of tokens) {
+		if (token.type === 'heading' && token.level === 1) {
+			return token.text;
+		}
+	}
+
+	return undefined;
 }

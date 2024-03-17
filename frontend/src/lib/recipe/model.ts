@@ -12,6 +12,7 @@ export namespace Tokens {
 	export interface Heading extends WithChildren {
 		type: 'heading';
 		level: number;
+		text: string;
 	}
 
 	export interface Hr {
@@ -50,13 +51,15 @@ export type Token =
 export type Section = Token[];
 
 export interface Metadata {
-	servings: number;
-	tags: string[];
-	source?: string;
+	readonly servings: number;
+	readonly tags: string[];
+	readonly source?: string;
 }
 
 export interface Recipe {
-	metadata: Metadata;
-	intro: Section;
-	steps: Section[];
+	readonly metadata: Metadata;
+	readonly title: string;
+
+	readonly intro: Section;
+	readonly steps: Section[];
 }
