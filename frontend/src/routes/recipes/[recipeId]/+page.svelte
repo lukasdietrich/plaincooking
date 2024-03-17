@@ -3,13 +3,10 @@
 	import { page } from '$app/stores';
 	import { resolveRoute } from '$app/paths';
 	import { t } from '$lib/i18n';
-	import { parse } from '$lib/recipe';
-	import { Recipe } from '$lib/components/recipe';
 	import { ActionPortal, Action } from '$lib/components/actions';
+	import { Recipe } from '$lib/components/recipe';
 
 	export let data: PageData;
-
-	$: recipe = parse(data.content);
 </script>
 
 <ActionPortal>
@@ -22,4 +19,4 @@
 	</Action>
 </ActionPortal>
 
-<Recipe {recipe} />
+<Recipe recipe={data.recipe} />

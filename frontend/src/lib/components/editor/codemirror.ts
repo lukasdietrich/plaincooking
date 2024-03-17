@@ -4,6 +4,7 @@ import { EditorView, keymap } from '@codemirror/view';
 import { indentWithTab } from '@codemirror/commands';
 import { markdown } from '@codemirror/lang-markdown';
 import { frontmatter } from './plugins/frontmatter';
+import { highlight } from './plugins/highlight';
 
 const theme = EditorView.theme({
 	'.cm-content': {
@@ -27,6 +28,7 @@ export function create(element: HTMLElement, content: string, extensions: Extens
 				extensions: frontmatter
 			}),
 			EditorView.lineWrapping,
+			highlight,
 			...extensions
 		],
 		parent: element

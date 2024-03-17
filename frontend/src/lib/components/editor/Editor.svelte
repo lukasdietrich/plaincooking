@@ -26,3 +26,25 @@
 </script>
 
 <div bind:this={element} />
+
+<style>
+	div :global(.cm-heading-1 *) {
+		--at-apply: text-2xl thickness-1 underline-offset-4;
+	}
+
+	div :global(.cm-hr) {
+		--at-apply: bg-blue-100;
+	}
+
+	div :global(.cm-hr *) {
+		--at-apply: text-blue-900/40 font-semibold;
+	}
+
+	div :global(.cm-ingredient) {
+		--at-apply: bg-emerald-100 font-semibold not-italic;
+	}
+
+	div :global(.cm-codemark *) {
+		--at-apply: text-emerald-900/40;
+	}
+</style>

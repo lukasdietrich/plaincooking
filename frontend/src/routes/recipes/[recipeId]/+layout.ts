@@ -1,5 +1,6 @@
 import type { LayoutLoad } from './$types';
 import { client } from '$lib';
+import { parse } from '$lib/recipe';
 
 export const load: LayoutLoad = async ({ params }) => {
 	const [metadata, content] = await Promise.all([
@@ -11,6 +12,7 @@ export const load: LayoutLoad = async ({ params }) => {
 		title: metadata.title,
 
 		metadata,
-		content
+		content,
+		recipe: parse(content)
 	};
 };
