@@ -1,4 +1,4 @@
-package service
+package parser
 
 import (
 	"errors"
@@ -15,7 +15,14 @@ var (
 	ErrMissingTitle  = fmt.Errorf("%w: missing title", ErrInvalidRecipe)
 )
 
+type RecipeFrontmatter struct {
+	Servings uint
+	Tags     []string
+	Source   string
+}
+
 type RecipeMetadata struct {
+	*RecipeFrontmatter
 	Title string
 }
 
@@ -30,13 +37,18 @@ func NewParser() *RecipeParser {
 }
 
 func (p *RecipeParser) ParseRecipe(content []byte) (*RecipeMetadata, error) {
-	r := text.NewReader(content)
+	frontmatter, err := parseFrontmatter[RecipeFrontmatter](content)
+	if err != nil {
+		return nil, err
+	}
+
+	r := text.NewReader(frontmatter.Content)
 	ctx := parser.NewContext()
 	root := p.m.Parser().Parse(r, parser.WithContext(ctx))
 
-	var recipe RecipeMetadata
+	recipe := RecipeMetadata{RecipeFrontmatter: frontmatter.Matter}
 
-	if err := p.findTitle(&recipe, content, root); err != nil {
+	if err := p.findTitle(&recipe, frontmatter.Content, root); err != nil {
 		return nil, err
 	}
 
@@ -44,9 +56,13 @@ func (p *RecipeParser) ParseRecipe(content []byte) (*RecipeMetadata, error) {
 }
 
 func (p *RecipeParser) findTitle(recipe *RecipeMetadata, content []byte, node ast.Node) error {
-	err := ast.Walk(node, func(n ast.Node, entering bool) (ast.WalkStatus, error) {
+	err := ast.Walk(node, func(n ast.Node, _ bool) (ast.WalkStatus, error) {
 		if heading, ok := n.(*ast.Heading); ok && heading.Level == 1 {
 			recipe.Title = string(n.Text(content))
+			return ast.WalkStop, nil
+		}
+
+		if _, ok := n.(*ast.ThematicBreak); ok {
 			return ast.WalkStop, nil
 		}
 

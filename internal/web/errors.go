@@ -10,7 +10,7 @@ import (
 	"github.com/mattn/go-sqlite3"
 	"github.com/rs/xid"
 
-	"github.com/lukasdietrich/plaincooking/internal/service"
+	"github.com/lukasdietrich/plaincooking/internal/parser"
 )
 
 func logError() echo.MiddlewareFunc {
@@ -49,7 +49,7 @@ func mapBusinessError(err error) error {
 		return echo.NewHTTPError(http.StatusNotFound, "resource not found").SetInternal(err)
 	}
 
-	if errors.Is(err, service.ErrInvalidRecipe) {
+	if errors.Is(err, parser.ErrInvalidRecipe) {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, "invalid recipe").SetInternal(err)
 	}
 

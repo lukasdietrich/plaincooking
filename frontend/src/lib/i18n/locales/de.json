@@ -1,0 +1,12 @@
+{
+	"actions": {
+		"back": "zurück",
+		"edit": "bearbeiten",
+		"save": "speichern"
+	},
+
+	"recipe": {
+		"step": "Schritt {n}",
+		"servings": "{n} Portionen"
+	}
+}
