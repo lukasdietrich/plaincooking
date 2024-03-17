@@ -8,7 +8,7 @@ export default defineConfig({
 	build: {
 		// The only chunk larger than 500kB contains the codemirror editor.
 		// It is already code-split properly and only loaded when navigating to the edit page.
-		chunkSizeWarningLimit: 768,
+		chunkSizeWarningLimit: 768
 	},
 
 	server: {

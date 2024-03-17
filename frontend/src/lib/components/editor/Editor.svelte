@@ -32,6 +32,10 @@
 		--at-apply: text-2xl thickness-1 underline-offset-4;
 	}
 
+	div :global(.cm-frontmatter-fence *) {
+		--at-apply: text-gray-900/40 font-semibold;
+	}
+
 	div :global(.cm-hr) {
 		--at-apply: bg-blue-100;
 	}

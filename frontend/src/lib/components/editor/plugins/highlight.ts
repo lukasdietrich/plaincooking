@@ -11,6 +11,11 @@ interface DecorationRule {
 
 const decorateNodes = (builder: RangeSetBuilder<Decoration>) => {
 	const rules: Record<string, DecorationRule> = {
+		FrontmatterFence: {
+			class: 'cm-frontmatter-fence',
+			line: true
+		},
+
 		ATXHeading1: {
 			class: 'cm-heading-1'
 		},
