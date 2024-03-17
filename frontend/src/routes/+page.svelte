@@ -1,9 +1,17 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 	import placeholder from '$lib/images/placeholder.jpeg';
+	import { t } from '$lib/i18n';
+	import { ActionPortal, Action } from '$lib/components/actions';
 
 	export let data: PageData;
 </script>
+
+<ActionPortal>
+	<Action href={'/recipes/new'} title={$t('actions.new-recipe')}>
+		<i class="icon-plus"></i>
+	</Action>
+</ActionPortal>
 
 <ul class="grid md:grid-cols-2 lg:grid-cols-3 gap-5 group">
 	{#each data.recipes as recipe}
