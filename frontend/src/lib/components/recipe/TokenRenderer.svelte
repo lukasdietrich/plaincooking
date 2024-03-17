@@ -20,7 +20,7 @@
 {:else if token.type === 'ingredient'}
 	<Ingredient {token} />
 {:else if token.type === 'paragraph'}
-	<p class="py-2">
+	<p class="py-2 font-serif text-lg">
 		<svelte:self token={token.children} />
 	</p>
 {:else if token.type === 'strong'}

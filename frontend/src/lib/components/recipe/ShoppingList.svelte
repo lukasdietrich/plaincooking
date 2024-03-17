@@ -29,7 +29,7 @@
 	}
 </script>
 
-<table>
+<table class="font-serif text-lg">
 	<tbody>
 		{#each ingredients as token}
 			<tr class="odd:bg-slate-50">

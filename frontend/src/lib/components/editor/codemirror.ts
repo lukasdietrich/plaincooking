@@ -7,7 +7,7 @@ import { frontmatter } from './plugins/frontmatter';
 import { highlight } from './plugins/highlight';
 
 const theme = EditorView.theme({
-	'.cm-content': {
+	'.cm-content, .cm-scroller': {
 		fontFamily: 'inherit',
 		fontSize: 'inherit'
 	},

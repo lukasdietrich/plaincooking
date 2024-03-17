@@ -16,8 +16,10 @@
 {/if}
 
 {#if numerator !== 0}
-	<span class="text-sm">
-		<sup>{numerator}</sup>/<sub>{denominator}</sub>
+	<span class="relative text-sm">
+		<span class="relative -top-1">{numerator}</span>
+		<span class="-mx-0.75">/</span>
+		<span class="relative top-0.5">{denominator}</span>
 	</span>
 {/if}
 

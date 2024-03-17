@@ -36,6 +36,9 @@
 	"dependencies": {
 		"@codemirror/lang-markdown": "^6.2.4",
 		"@codemirror/legacy-modes": "^6.3.3",
+		"@fontsource-variable/crimson-pro": "^5.0.18",
+		"@fontsource-variable/inconsolata": "^5.0.17",
+		"@fontsource-variable/readex-pro": "^5.0.12",
 		"codemirror": "^6.0.1",
 		"fraction.js": "^4.3.7",
 		"lucide-static": "^0.357.0",
