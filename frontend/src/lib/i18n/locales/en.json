@@ -2,7 +2,8 @@
 	"actions": {
 		"back": "back",
 		"edit": "edit",
-		"save": "save"
+		"save": "save",
+		"new-recipe": "new recipe"
 	},
 
 	"recipe": {
