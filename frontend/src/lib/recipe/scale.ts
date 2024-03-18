@@ -3,6 +3,7 @@ import Fraction from 'fraction.js';
 
 export function scaleRecipe({ metadata, title, intro, steps }: Recipe, servings: number): Recipe {
 	const multiplier = new Fraction(servings, metadata.servings);
+	const scale = scaleTokens(multiplier);
 
 	return {
 		metadata: {
@@ -10,29 +11,32 @@ export function scaleRecipe({ metadata, title, intro, steps }: Recipe, servings:
 			servings
 		},
 		title,
-		intro: scaleTokens(intro, multiplier),
-		steps: steps.map((step) => scaleTokens(step, multiplier))
+		intro: scale(intro),
+		steps: steps.map(scale)
 	};
 }
 
-function scaleTokens(tokens: Token[], multiplier: Fraction): Token[] {
-	return tokens.map((token) => scaleToken(token, multiplier));
-}
+const scaleTokens =
+	(multiplier: Fraction) =>
+	(tokens: Token[]): Token[] =>
+		tokens.map(scaleToken(multiplier));
 
-function scaleToken(token: Token, multiplier: Fraction): Token {
-	if (token.type === 'ingredient' && token.quantity) {
-		return {
-			...token,
-			quantity: token.quantity.mul(multiplier)
-		};
-	}
+const scaleToken =
+	(multiplier: Fraction) =>
+	(token: Token): Token => {
+		if (token.type === 'ingredient' && token.quantity) {
+			return {
+				...token,
+				quantity: token.quantity.mul(multiplier)
+			};
+		}
 
-	if ('children' in token) {
-		return {
-			...token,
-			children: scaleTokens(token.children, multiplier)
-		};
-	}
+		if ('children' in token) {
+			return {
+				...token,
+				children: scaleTokens(multiplier)(token.children)
+			};
+		}
 
-	return token;
-}
+		return token;
+	};
