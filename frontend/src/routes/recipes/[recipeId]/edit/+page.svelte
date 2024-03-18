@@ -7,11 +7,25 @@
 	import { t } from '$lib/i18n';
 	import { ActionPortal, Action } from '$lib/components/actions';
 	import { Editor } from '$lib/components/editor';
+	import Modal from '$lib/components/Modal.svelte';
+
+	const BooleanModal = Modal<boolean>;
 
 	export let data: PageData;
-	let content = data.content;
 
-	async function save() {
+	let content = data.content;
+	let deleteModal: Modal<boolean>;
+
+	async function deleteRecipe() {
+		if (await deleteModal.show()) {
+			const recipeId = $page.params.recipeId;
+
+			await client.recipes.deleteRecipe(recipeId);
+			await goto('/', { invalidateAll: true });
+		}
+	}
+
+	async function saveRecipe() {
 		const recipeId = $page.params.recipeId;
 
 		await client.recipes.updateRecipe(recipeId, content);
@@ -24,9 +38,32 @@
 		<i class="icon-undo-2"></i>
 	</Action>
 
-	<Action on:click={save} title={$t('actions.save')}>
+	<Action on:click={deleteRecipe} title={$t('actions.back')}>
+		<i class="icon-trash"></i>
+	</Action>
+
+	<Action on:click={saveRecipe} title={$t('actions.save')}>
 		<i class="icon-save"></i>
 	</Action>
 </ActionPortal>
 
 <Editor bind:value={content} />
+
+<BooleanModal bind:this={deleteModal} let:close>
+	<p>Sicher löschen?</p>
+
+	<div class="flex justify-between mt-5">
+		<button
+			class="bg-gray-200 px-3 py-1 transition hover:(text-white bg-blue)"
+			on:click={() => close(false)}
+		>
+			Nein
+		</button>
+		<button
+			class="bg-gray-200 px-3 py-1 transition hover:(text-white bg-red)"
+			on:click={() => close(true)}
+		>
+			Ja
+		</button>
+	</div>
+</BooleanModal>
