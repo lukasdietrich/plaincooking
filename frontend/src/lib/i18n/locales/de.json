@@ -1,13 +1,24 @@
 {
 	"actions": {
+		"yes": "Ja",
+		"no": "Nein",
+
 		"back": "zurück",
 		"edit": "bearbeiten",
 		"save": "speichern",
-		"new-recipe": "neues Rezept"
+
+		"recipe": {
+			"delete": "Rezept löschen",
+			"new": "neues Rezept"
+		}
 	},
 
 	"recipe": {
 		"step": "Schritt {n}",
-		"servings": "{n} Portionen"
+		"servings": "{n} Portionen",
+
+		"modal": {
+			"delete": "Rezept löschen?"
+		}
 	}
 }

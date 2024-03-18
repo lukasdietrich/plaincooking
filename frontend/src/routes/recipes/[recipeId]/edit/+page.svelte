@@ -38,7 +38,7 @@
 		<i class="icon-undo-2"></i>
 	</Action>
 
-	<Action on:click={deleteRecipe} title={$t('actions.back')}>
+	<Action on:click={deleteRecipe} title={$t('actions.recipe.delete')}>
 		<i class="icon-trash"></i>
 	</Action>
 
@@ -50,20 +50,20 @@
 <Editor bind:value={content} />
 
 <BooleanModal bind:this={deleteModal} let:close>
-	<p>Sicher löschen?</p>
+	<p>{$t('recipe.modal.delete')}</p>
 
 	<div class="flex justify-between mt-5">
 		<button
 			class="bg-gray-200 px-3 py-1 transition hover:(text-white bg-blue)"
 			on:click={() => close(false)}
 		>
-			Nein
+			{$t('actions.no')}
 		</button>
 		<button
 			class="bg-gray-200 px-3 py-1 transition hover:(text-white bg-red)"
 			on:click={() => close(true)}
 		>
-			Ja
+			{$t('actions.yes')}
 		</button>
 	</div>
 </BooleanModal>

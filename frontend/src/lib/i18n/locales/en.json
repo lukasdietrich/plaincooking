@@ -1,13 +1,24 @@
 {
 	"actions": {
+		"yes": "yes",
+		"no": "no",
+
 		"back": "back",
 		"edit": "edit",
 		"save": "save",
-		"new-recipe": "new recipe"
+
+		"recipe": {
+			"delete": "delete recipe",
+			"new": "new recipe"
+		}
 	},
 
 	"recipe": {
 		"step": "Step {n}",
-		"servings": "{n} servings"
+		"servings": "{n} servings",
+
+		"modal": {
+			"delete": "Delete recipe?"
+		}
 	}
 }

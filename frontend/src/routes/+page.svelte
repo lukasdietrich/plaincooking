@@ -8,7 +8,7 @@
 </script>
 
 <ActionPortal>
-	<Action href={'/recipes/new'} title={$t('actions.new-recipe')}>
+	<Action href={'/recipes/new'} title={$t('actions.recipe.new')}>
 		<i class="icon-plus"></i>
 	</Action>
 </ActionPortal>
