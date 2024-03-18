@@ -4,12 +4,14 @@
 		"no": "no",
 
 		"back": "back",
-		"edit": "edit",
 		"save": "save",
 
 		"recipe": {
+			"new": "new recipe",
+			"edit": "edit recipe",
 			"delete": "delete recipe",
-			"new": "new recipe"
+			"shopping": "view shopping list",
+			"steps": "view steps"
 		}
 	},
 

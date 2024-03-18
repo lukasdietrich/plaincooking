@@ -9,5 +9,5 @@
 		<h1 class="text-xl font-semibold py-3">Plaincooking</h1>
 	</a>
 
-	<div id="actions"></div>
+	<div id="actions" class="flex"></div>
 </header>

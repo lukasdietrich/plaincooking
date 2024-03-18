@@ -52,7 +52,7 @@
 <BooleanModal bind:this={deleteModal} let:close>
 	<p>{$t('recipe.modal.delete')}</p>
 
-	<div class="flex justify-between mt-5">
+	<div class="flex justify-end space-x-5 mt-5">
 		<button
 			class="bg-gray-200 px-3 py-1 transition hover:(text-white bg-blue)"
 			on:click={() => close(false)}

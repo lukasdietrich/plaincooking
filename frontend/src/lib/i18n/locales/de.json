@@ -4,12 +4,14 @@
 		"no": "Nein",
 
 		"back": "zurück",
-		"edit": "bearbeiten",
 		"save": "speichern",
 
 		"recipe": {
+			"new": "neues Rezept",
+			"edit": "Rezept bearbeiten",
 			"delete": "Rezept löschen",
-			"new": "neues Rezept"
+			"shopping": "Einkaufsliste anzeigen",
+			"steps": "Schritte anzeigen"
 		}
 	},
 
