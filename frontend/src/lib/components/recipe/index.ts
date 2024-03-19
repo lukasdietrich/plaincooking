@@ -1,3 +1,5 @@
-import Recipe from './Recipe.svelte';
+import Header from './Header.svelte';
+import Step from './Step.svelte';
+import ShoppingList from './ShoppingList.svelte';
 
-export { Recipe };
+export { Header, Step, ShoppingList };
