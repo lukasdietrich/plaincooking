@@ -101,7 +101,6 @@ function processToken(token: MarkedToken): Token | undefined {
 			};
 
 		default:
-			console.log('discarding', token);
 			return undefined;
 	}
 }
