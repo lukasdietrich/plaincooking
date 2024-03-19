@@ -1,24 +1,44 @@
 <script lang="ts">
 	import type { Recipe } from '$lib/recipe';
+	import { goto } from '$app/navigation';
+	import { page } from '$app/stores';
 	import { t } from '$lib/i18n';
 	import TokenRenderer from './TokenRenderer.svelte';
 
 	export let recipe: Recipe;
 
 	$: metadata = recipe.metadata;
+	$: servings = metadata.servings;
+
+	function updateServings(delta: number) {
+		const url = new URL($page.url);
+		url.searchParams.set('servings', String(servings + delta));
+		goto(url);
+	}
 </script>
 
 <header>
 	<div class="flex space-x-2 mb-5 text-sm">
-		<div class="flex space-x-2 rounded-full bg-yellow-200 text-yellow-900 px-3 py-1">
+		<div class="flex items-center space-x-2 rounded-full bg-yellow-200 text-yellow-900 px-3 py-1">
 			<i class="icon-utensils"></i>
+
+			{#if servings > 1}
+				<button on:click={() => updateServings(-1)}>
+					<i class="icon-minus"></i>
+				</button>
+			{/if}
+
 			<span>
 				{$t('recipe.servings', { values: { n: metadata.servings } })}
 			</span>
+
+			<button on:click={() => updateServings(1)}>
+				<i class="icon-plus"></i>
+			</button>
 		</div>
 
 		{#each metadata.tags as tag}
-			<div class="flex space-x-1 rounded-full bg-blue-200 text-blue-900 px-3 py-1">
+			<div class="flex items-center space-x-1 rounded-full bg-blue-200 text-blue-900 px-3 py-1">
 				<i class="icon-hash"></i>
 				<span>{tag}</span>
 			</div>

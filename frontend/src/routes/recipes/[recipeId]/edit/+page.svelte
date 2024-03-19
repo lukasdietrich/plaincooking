@@ -1,8 +1,8 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import { goto } from '$app/navigation';
-	import { resolveRoute } from '$app/paths';
 	import { page } from '$app/stores';
+	import { goto } from '$app/navigation';
+	import { resolveRoute } from '$lib/routing';
 	import { client } from '$lib';
 	import { t } from '$lib/i18n';
 	import { ActionPortal, Action } from '$lib/components/actions';
@@ -27,14 +27,15 @@
 
 	async function saveRecipe() {
 		const recipeId = $page.params.recipeId;
-
 		await client.recipes.updateRecipe(recipeId, content);
-		await goto(resolveRoute('/recipes/[recipeId]', $page.params), { invalidateAll: true });
+
+		const url = resolveRoute('/recipes/[recipeId]', $page);
+		await goto(url, { invalidateAll: true });
 	}
 </script>
 
 <ActionPortal>
-	<Action href={resolveRoute('/recipes/[recipeId]', $page.params)} title={$t('actions.back')}>
+	<Action href={resolveRoute('/recipes/[recipeId]', $page)} title={$t('actions.back')}>
 		<i class="icon-undo-2"></i>
 	</Action>
 

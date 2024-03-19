@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { resolveRoute } from '$app/paths';
+	import { page } from '$app/stores';
+	import { resolveRoute } from '$lib/routing';
 	import { client } from '$lib';
 	import { t } from '$lib/i18n';
 	import { ActionPortal, Action } from '$lib/components/actions';
@@ -10,7 +11,9 @@
 
 	async function save() {
 		const { id } = await client.recipes.createRecipe(content);
-		await goto(resolveRoute('/recipes/[recipeId]', { recipeId: id }), { invalidateAll: true });
+		const url = resolveRoute('/recipes/[recipeId]', $page, { params: { recipeId: id } });
+
+		await goto(url, { invalidateAll: true });
 	}
 </script>
 

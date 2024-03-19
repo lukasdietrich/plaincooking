@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { LayoutData } from './$types';
 	import { page } from '$app/stores';
-	import { resolveRoute } from '$app/paths';
+	import { resolveRoute } from '$lib/routing';
 	import { t } from '$lib/i18n';
 	import { ActionPortal, Action } from '$lib/components/actions';
 	import { Header } from '$lib/components/recipe';
@@ -12,10 +12,7 @@
 </script>
 
 <ActionPortal>
-	<Action
-		href={resolveRoute('/recipes/[recipeId]/edit', $page.params)}
-		title={$t('actions.recipe.edit')}
-	>
+	<Action href={resolveRoute('/recipes/[recipeId]/edit', $page)} title={$t('actions.recipe.edit')}>
 		<i class="icon-file-pen-line"></i>
 	</Action>
 </ActionPortal>
