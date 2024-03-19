@@ -18,7 +18,12 @@ const config = {
 		},
 
 		prerender: {
-			entries: ['*', '/recipes/recipeId', '/recipes/recipeId/edit']
+			entries: [
+				'*',
+				'/recipes/[recipeId]',
+				'/recipes/[recipeId]/shopping',
+				'/recipes/[recipeId]/edit'
+			]
 		}
 	}
 };
