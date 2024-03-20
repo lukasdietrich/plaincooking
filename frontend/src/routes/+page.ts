@@ -1,8 +1,11 @@
 import type { PageLoad } from './$types';
-import { client } from '$lib';
+import { createApi } from '$lib/api';
 
-export const load: PageLoad = async () => {
+export const load: PageLoad = async ({ fetch }) => {
+	const { listRecipes } = createApi(fetch);
+	const recipes = await listRecipes();
+
 	return {
-		recipes: await client.recipes.listRecipes()
+		recipes
 	};
 };

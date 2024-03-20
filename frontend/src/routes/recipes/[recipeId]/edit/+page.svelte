@@ -3,31 +3,32 @@
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 	import { resolveRoute } from '$lib/routing';
-	import { client } from '$lib';
+	import { createApi } from '$lib/api';
 	import { t } from '$lib/i18n';
 	import { ActionPortal, Action } from '$lib/components/actions';
 	import { Editor } from '$lib/components/editor';
 	import Modal from '$lib/components/Modal.svelte';
 
 	const BooleanModal = Modal<boolean>;
+	const { deleteRecipe, updateRecipe } = createApi();
 
 	export let data: PageData;
 
 	let content = data.content;
 	let deleteModal: Modal<boolean>;
 
-	async function deleteRecipe() {
+	async function handleDelete() {
 		if (await deleteModal.show()) {
 			const recipeId = $page.params.recipeId;
 
-			await client.recipes.deleteRecipe(recipeId);
+			await deleteRecipe(recipeId);
 			await goto('/', { invalidateAll: true });
 		}
 	}
 
-	async function saveRecipe() {
+	async function handleUpdate() {
 		const recipeId = $page.params.recipeId;
-		await client.recipes.updateRecipe(recipeId, content);
+		await updateRecipe(recipeId, content);
 
 		const url = resolveRoute('/recipes/[recipeId]', $page);
 		await goto(url, { invalidateAll: true });
@@ -39,11 +40,11 @@
 		<i class="icon-undo-2"></i>
 	</Action>
 
-	<Action on:click={deleteRecipe} title={$t('actions.recipe.delete')}>
+	<Action on:click={handleDelete} title={$t('actions.recipe.delete')}>
 		<i class="icon-trash"></i>
 	</Action>
 
-	<Action on:click={saveRecipe} title={$t('actions.save')}>
+	<Action on:click={handleUpdate} title={$t('actions.save')}>
 		<i class="icon-save"></i>
 	</Action>
 </ActionPortal>
