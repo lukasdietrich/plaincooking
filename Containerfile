@@ -14,7 +14,6 @@ from docker.io/library/node:lts-alpine as build-frontend
 	copy frontend ./frontend
 	copy --from=generate-openapi-spec /build/target ./target
 
-	run ls
 	run apk --no-cache add make
 	run  make \
 		--assume-old target/swagger.json \
@@ -32,7 +31,6 @@ from docker.io/library/golang:alpine as build-backend
 
 	run apk --no-cache add make gcc musl-dev
 	run make \
-			--assume-old target/swagger.json \
 			--assume-old frontend/build \
 			build
 
