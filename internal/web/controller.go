@@ -28,7 +28,10 @@ type RecipeController struct {
 	assets  *service.AssetService
 }
 
-func NewRecipeController(recipes *service.RecipeService, assets *service.AssetService) *RecipeController {
+func NewRecipeController(
+	recipes *service.RecipeService,
+	assets *service.AssetService,
+) *RecipeController {
 	return &RecipeController{
 		recipes: recipes,
 		assets:  assets,
@@ -286,8 +289,6 @@ func (c *AssetController) Download(ctx echo.Context) error {
 	if err != nil {
 		return err
 	}
-
-	defer r.Close()
 
 	header := ctx.Response().Header()
 	header.Add(echo.HeaderContentLength, fmt.Sprintf("%d", r.TotalSize))

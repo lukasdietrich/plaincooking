@@ -5,10 +5,16 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+
 	"github.com/lukasdietrich/plaincooking/frontend"
+	"github.com/lukasdietrich/plaincooking/internal/service"
 )
 
-func NewRouter(recipes *RecipeController, assets *AssetController) http.Handler {
+func NewRouter(
+	transactions *service.TransactionService,
+	recipes *RecipeController,
+	assets *AssetController,
+) http.Handler {
 	r := echo.New()
 	r.Binder = new(binder)
 
@@ -23,6 +29,8 @@ func NewRouter(recipes *RecipeController, assets *AssetController) http.Handler 
 	}))
 
 	api := r.Group("/api")
+	api.Use(transactional(transactions))
+
 	api.GET("/recipes", recipes.List)
 	api.POST("/recipes", recipes.Create)
 	api.GET("/recipes/:recipeId", recipes.Read)

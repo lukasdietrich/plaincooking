@@ -10,13 +10,12 @@ import (
 	"github.com/rs/xid"
 	"github.com/spf13/viper"
 
-	"github.com/lukasdietrich/plaincooking/internal/database"
 	"github.com/lukasdietrich/plaincooking/internal/database/models"
 )
 
 var (
 	_ io.WriteCloser = &assetWriter{}
-	_ io.ReadCloser  = &assetReader{}
+	_ io.Reader      = &assetReader{}
 )
 
 func init() {
@@ -24,21 +23,17 @@ func init() {
 }
 
 type AssetService struct {
-	querier database.Querier
+	transactions *TransactionService
 }
 
-func NewAssetService(querier database.Querier) *AssetService {
+func NewAssetService(transactions *TransactionService) *AssetService {
 	return &AssetService{
-		querier: querier,
+		transactions: transactions,
 	}
 }
 
 func (s *AssetService) Writer(ctx context.Context, filename, mediaTyp string) (*assetWriter, error) {
-	querier, tx, err := s.querier.Begin(ctx)
-	if err != nil {
-		tx.Rollback() // nolint:errcheck
-		return nil, err
-	}
+	querier := s.transactions.Querier(ctx)
 
 	createAssetParams := models.CreateAssetParams{
 		ID:        xid.New(),
@@ -49,7 +44,6 @@ func (s *AssetService) Writer(ctx context.Context, filename, mediaTyp string) (*
 
 	asset, err := querier.CreateAsset(ctx, createAssetParams)
 	if err != nil {
-		tx.Rollback() // nolint:errcheck
 		return nil, err
 	}
 
@@ -57,7 +51,6 @@ func (s *AssetService) Writer(ctx context.Context, filename, mediaTyp string) (*
 		Asset:   asset,
 		ctx:     ctx,
 		querier: querier,
-		tx:      tx,
 		buffer:  make([]byte, viper.GetSizeInBytes("asset.chunk.size")),
 	}
 
@@ -65,14 +58,10 @@ func (s *AssetService) Writer(ctx context.Context, filename, mediaTyp string) (*
 }
 
 func (s *AssetService) Reader(ctx context.Context, id xid.ID) (*assetReader, error) {
-	querier, tx, err := s.querier.BeginReadonly(ctx)
-	if err != nil {
-		return nil, err
-	}
+	querier := s.transactions.Querier(ctx)
 
 	asset, err := querier.ReadAsset(ctx, models.ReadAssetParams{ID: id})
 	if err != nil {
-		tx.Rollback() // nolint:errcheck
 		return nil, err
 	}
 
@@ -80,7 +69,6 @@ func (s *AssetService) Reader(ctx context.Context, id xid.ID) (*assetReader, err
 		ReadAssetRow: asset,
 		ctx:          ctx,
 		querier:      querier,
-		tx:           tx,
 	}
 
 	return &r, nil
@@ -90,19 +78,14 @@ type assetWriter struct {
 	models.Asset
 
 	ctx     context.Context
-	querier database.Querier
-	tx      *sql.Tx
+	querier models.Querier
 
 	buffer []byte
 	n      int
 }
 
 func (w *assetWriter) Close() error {
-	if err := w.flushChunk(true); err != nil {
-		return err
-	}
-
-	return w.tx.Commit()
+	return w.flushChunk(true)
 }
 
 func (w *assetWriter) Write(b []byte) (int, error) {
@@ -138,7 +121,7 @@ func (w *assetWriter) flushChunk(always bool) error {
 	}
 
 	if err := w.querier.CreateAssetChunk(w.ctx, createAssetChunkParams); err != nil {
-		w.tx.Rollback() // nolint:errcheck
+		return err
 	}
 
 	w.n = 0
@@ -149,16 +132,11 @@ type assetReader struct {
 	models.ReadAssetRow
 
 	ctx     context.Context
-	querier database.Querier
-	tx      *sql.Tx
+	querier models.Querier
 
 	offset xid.ID
 	buffer []byte
 	n      int
-}
-
-func (r *assetReader) Close() error {
-	return r.tx.Rollback()
 }
 
 func (r *assetReader) Read(b []byte) (int, error) {
