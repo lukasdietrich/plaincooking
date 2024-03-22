@@ -85,3 +85,19 @@ where "asset_id" = sqlc.arg(asset_id)
   and (sqlc.arg(id_offset) is null or "id" > sqlc.arg(id_offset))
 order by "id"
 limit 1 ;
+
+-- name: CreateRecipeAsset :exec
+insert into "recipe_asset" (
+	"recipe_id" ,
+	"asset_id"
+) values (
+	sqlc.arg(recipe_id) ,
+	sqlc.arg(asset_id)
+) ;
+
+-- name: ListRecipeAssets :many
+select "a".*
+from "asset" "a"
+	inner join "recipe_asset" "r" on "a"."id" = "r"."asset_id"
+where "r"."recipe_id" = sqlc.arg(recipe_id)
+order by "a"."id" desc ;

@@ -25,16 +25,11 @@ type PlaincookingApiError echo.HTTPError // @name PlaincookingApiError
 
 type RecipeController struct {
 	recipes *service.RecipeService
-	assets  *service.AssetService
 }
 
-func NewRecipeController(
-	recipes *service.RecipeService,
-	assets *service.AssetService,
-) *RecipeController {
+func NewRecipeController(recipes *service.RecipeService) *RecipeController {
 	return &RecipeController{
 		recipes: recipes,
-		assets:  assets,
 	}
 }
 
@@ -177,8 +172,28 @@ func (c *RecipeController) Delete(ctx echo.Context) error {
 	return ctx.NoContent(http.StatusNoContent)
 }
 
+// @summary  List recipe images
+// @id       listRecipeImages
+// @tags     recipes assets
+// @router   /recipes/{recipeId}/images  [get]
+// @produce  application/json
+// @success  200  {array}  AssetMetadataDto
+func (c *RecipeController) ListImages(ctx echo.Context) error {
+	var req ReadRecipeRequest
+	if err := ctx.Bind(&req); err != nil {
+		return err
+	}
+
+	assetSlice, err := c.recipes.ListImages(ctx.Request().Context(), req.ID)
+	if err != nil {
+		return err
+	}
+
+	return ctx.JSON(http.StatusOK, mapSlice(assetSlice, mapAssetMetadataDto))
+}
+
 type UploadRecipeImageRequest struct {
-	RecipeId xid.ID `json:"-" param:"recipeId"`
+	ID xid.ID `json:"-" param:"recipeId"`
 }
 
 // @summary  Upload a new recipe image
@@ -209,9 +224,7 @@ func (c *RecipeController) UploadImage(ctx echo.Context) error {
 	filename := part.FileName()
 	mediaTyp := part.Header.Get(echo.HeaderContentType)
 
-	// TODO: Save relation between recipe and asset
-
-	w, err := c.assets.Writer(ctx.Request().Context(), filename, mediaTyp)
+	w, err := c.recipes.ImageWriter(ctx.Request().Context(), req.ID, filename, mediaTyp)
 	if err != nil {
 		return err
 	}

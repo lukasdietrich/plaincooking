@@ -36,6 +36,7 @@ func NewRouter(
 	api.GET("/recipes/:recipeId", recipes.Read)
 	api.PUT("/recipes/:recipeId", recipes.Update)
 	api.DELETE("/recipes/:recipeId", recipes.Delete)
+	api.GET("/recipes/:recipeId/images", recipes.ListImages)
 	api.POST("/recipes/:recipeId/images", recipes.UploadImage)
 
 	api.GET("/assets/:assetId", assets.Download)

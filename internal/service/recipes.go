@@ -12,12 +12,18 @@ import (
 
 type RecipeService struct {
 	transactions *TransactionService
+	assets       *AssetService
 	parser       *parser.RecipeParser
 }
 
-func NewRecipeService(transactions *TransactionService, parser *parser.RecipeParser) *RecipeService {
+func NewRecipeService(
+	transactions *TransactionService,
+	assets *AssetService,
+	parser *parser.RecipeParser,
+) *RecipeService {
 	return &RecipeService{
 		transactions: transactions,
+		assets:       assets,
 		parser:       parser,
 	}
 }
@@ -102,4 +108,29 @@ func (s *RecipeService) Delete(ctx context.Context, id xid.ID) error {
 	querier := s.transactions.Querier(ctx)
 	_, err := querier.DeleteRecipe(ctx, models.DeleteRecipeParams{ID: id})
 	return err
+}
+
+func (s *RecipeService) ListImages(ctx context.Context, id xid.ID) ([]models.Asset, error) {
+	querier := s.transactions.Querier(ctx)
+	return querier.ListRecipeAssets(ctx, models.ListRecipeAssetsParams{RecipeID: id})
+}
+
+func (s *RecipeService) ImageWriter(ctx context.Context, id xid.ID, filename, mediaType string) (*assetWriter, error) {
+	querier := s.transactions.Querier(ctx)
+
+	w, err := s.assets.Writer(ctx, filename, mediaType)
+	if err != nil {
+		return nil, err
+	}
+
+	createRecipeAssetParams := models.CreateRecipeAssetParams{
+		RecipeID: id,
+		AssetID:  w.ID,
+	}
+
+	if err := querier.CreateRecipeAsset(ctx, createRecipeAssetParams); err != nil {
+		return nil, err
+	}
+
+	return w, nil
 }
