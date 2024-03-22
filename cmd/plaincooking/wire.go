@@ -20,9 +20,11 @@ func InjectServer() (*http.Server, error) {
 		// Web
 		web.NewServer,
 		web.NewRouter,
+		web.NewAssetController,
 		web.NewRecipeController,
 
 		// Service
+		service.NewAssetService,
 		service.NewRecipeService,
 
 		// Parser

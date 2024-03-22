@@ -47,3 +47,41 @@ returning * ;
 delete from "recipe"
 where "id" = sqlc.arg(id)
 returning * ;
+
+-- name: CreateAsset :one
+insert into "asset" (
+	"id" ,
+	"created_at" ,
+	"filename" ,
+	"media_type"
+) values (
+	sqlc.arg(id) ,
+	sqlc.arg(created_at) ,
+	sqlc.arg(filename) ,
+	sqlc.arg(media_type)
+) returning * ;
+
+-- name: CreateAssetChunk :exec
+insert into "asset_chunk" (
+	"id" ,
+	"asset_id" ,
+	"content"
+)  values (
+	sqlc.arg(id) ,
+	sqlc.arg(asset_id) ,
+	sqlc.arg(content)
+) ;
+
+-- name: ReadAsset :one
+select "a".*, cast(sum(octet_length("c"."content")) as integer) "total_size"
+from "asset" "a"
+	inner join "asset_chunk" "c" on "a"."id" = "c"."asset_id"
+where "a"."id" = sqlc.arg(id) ;
+
+-- name: ReadAssetChunk :one
+select *
+from "asset_chunk"
+where "asset_id" = sqlc.arg(asset_id)
+  and (sqlc.arg(id_offset) is null or "id" > sqlc.arg(id_offset))
+order by "id"
+limit 1 ;

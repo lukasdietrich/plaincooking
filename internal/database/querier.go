@@ -15,6 +15,7 @@ var (
 type Querier interface {
 	models.Querier
 	Begin(context.Context) (Querier, *sql.Tx, error)
+	BeginReadonly(context.Context) (Querier, *sql.Tx, error)
 }
 
 type querier struct {
@@ -30,6 +31,14 @@ func NewQuerier(db models.DBTX) Querier {
 }
 
 func (q querier) Begin(ctx context.Context) (Querier, *sql.Tx, error) {
+	return q.begin(ctx, nil)
+}
+
+func (q querier) BeginReadonly(ctx context.Context) (Querier, *sql.Tx, error) {
+	return q.begin(ctx, &sql.TxOptions{ReadOnly: true})
+}
+
+func (q querier) begin(ctx context.Context, options *sql.TxOptions) (Querier, *sql.Tx, error) {
 	txer, ok := q.db.(interface {
 		BeginTx(context.Context, *sql.TxOptions) (*sql.Tx, error)
 	})
@@ -37,7 +46,7 @@ func (q querier) Begin(ctx context.Context) (Querier, *sql.Tx, error) {
 		return nil, nil, ErrNestedTx
 	}
 
-	tx, err := txer.BeginTx(ctx, nil)
+	tx, err := txer.BeginTx(ctx, options)
 	if err != nil {
 		return nil, nil, err
 	}

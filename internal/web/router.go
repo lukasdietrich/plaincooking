@@ -8,7 +8,7 @@ import (
 	"github.com/lukasdietrich/plaincooking/frontend"
 )
 
-func NewRouter(recipes *RecipeController) http.Handler {
+func NewRouter(recipes *RecipeController, assets *AssetController) http.Handler {
 	r := echo.New()
 	r.Binder = new(binder)
 
@@ -28,6 +28,9 @@ func NewRouter(recipes *RecipeController) http.Handler {
 	api.GET("/recipes/:recipeId", recipes.Read)
 	api.PUT("/recipes/:recipeId", recipes.Update)
 	api.DELETE("/recipes/:recipeId", recipes.Delete)
+	api.POST("/recipes/:recipeId/images", recipes.UploadImage)
+
+	api.GET("/assets/:assetId", assets.Download)
 
 	return r
 }
