@@ -36,7 +36,7 @@ func NewAssetService(querier database.Querier) *AssetService {
 func (s *AssetService) Writer(ctx context.Context, filename, mediaTyp string) (*assetWriter, error) {
 	querier, tx, err := s.querier.Begin(ctx)
 	if err != nil {
-		tx.Rollback()
+		tx.Rollback() // nolint:errcheck
 		return nil, err
 	}
 
@@ -49,7 +49,7 @@ func (s *AssetService) Writer(ctx context.Context, filename, mediaTyp string) (*
 
 	asset, err := querier.CreateAsset(ctx, createAssetParams)
 	if err != nil {
-		tx.Rollback()
+		tx.Rollback() // nolint:errcheck
 		return nil, err
 	}
 
@@ -72,7 +72,7 @@ func (s *AssetService) Reader(ctx context.Context, id xid.ID) (*assetReader, err
 
 	asset, err := querier.ReadAsset(ctx, models.ReadAssetParams{ID: id})
 	if err != nil {
-		tx.Rollback()
+		tx.Rollback() // nolint:errcheck
 		return nil, err
 	}
 
