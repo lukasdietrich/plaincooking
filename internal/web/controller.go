@@ -42,7 +42,7 @@ type RecipeMetadataDto struct {
 type AssetMetadataDto struct {
 	ID   xid.ID `json:"id"`
 	Href string `json:"href"`
-} // @name AssetMetadataDto
+} // @name AssetMetadata
 
 // @summary  List recipes
 // @id       listRecipes
@@ -282,7 +282,8 @@ func NewAssetController(assets *service.AssetService) *AssetController {
 }
 
 type DownloadAssetRequest struct {
-	ID xid.ID `param:"assetId"`
+	ID        xid.ID                `param:"assetId"`
+	Thumbnail service.ThumbnailSize `query:"thumbnail"`
 }
 
 // @summary  Download an asset
@@ -291,6 +292,7 @@ type DownloadAssetRequest struct {
 // @router   /assets/{assetId}  [get]
 // @produce  application/octet-stream
 // @param    assetId  path  string  true  "Asset ID"
+// @param    thumbnail  query  string  false  "Thumbnail version of an image"
 // @success  200  {blob}  blob
 // @failure  400  {object}  PlaincookingApiError
 // @failure  404  {object}  PlaincookingApiError
@@ -300,7 +302,27 @@ func (c *AssetController) Download(ctx echo.Context) error {
 		return err
 	}
 
+	if req.Thumbnail != service.ThumbnailUnknown {
+		return c.downloadThumbnail(ctx, req)
+	}
+
+	return c.downloadOriginal(ctx, req)
+}
+
+func (c *AssetController) downloadOriginal(ctx echo.Context, req DownloadAssetRequest) error {
 	r, err := c.assets.Reader(ctx.Request().Context(), req.ID)
+	if err != nil {
+		return err
+	}
+
+	header := ctx.Response().Header()
+	header.Add(echo.HeaderContentLength, fmt.Sprintf("%d", r.TotalSize))
+
+	return ctx.Stream(http.StatusOK, r.MediaType, r)
+}
+
+func (c *AssetController) downloadThumbnail(ctx echo.Context, req DownloadAssetRequest) error {
+	r, err := c.assets.ThumbnailReader(ctx.Request().Context(), req.ID, req.Thumbnail)
 	if err != nil {
 		return err
 	}

@@ -2,7 +2,7 @@
 	import type { components } from '$lib/api';
 	import Carousel from './Carousel.svelte';
 
-	export let images: components['schemas']['AssetMetadataDto'][] = [];
+	export let images: components['schemas']['AssetMetadata'][] = [];
 
 	$: hrefs = images.map((image) => image.href);
 </script>

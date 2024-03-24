@@ -1,10 +1,19 @@
 <script lang="ts">
 	import type { PageData } from './$types';
+	import type { components } from '$lib/api';
 	import placeholder from '$lib/images/placeholder.jpeg';
 	import { t } from '$lib/i18n';
 	import { ActionPortal, Action } from '$lib/components/actions';
 
 	export let data: PageData;
+
+	function getImageUrl(recipe: components['schemas']['RecipeMetadata']) {
+		if (recipe.imageHref) {
+			return `${recipe.imageHref}?thumbnail=tile`;
+		}
+
+		return placeholder;
+	}
 </script>
 
 <ActionPortal>
@@ -17,7 +26,7 @@
 	{#each data.recipes as recipe}
 		<li
 			class="rounded shadow overflow-clip bg-center bg-cover transition group-hover:opacity-80 hover:(!opacity-100 ring-2 ring-emerald-800)"
-			style:background-image="url({recipe.imageHref || placeholder})"
+			style:background-image="url({getImageUrl(recipe)})"
 		>
 			<a class="block" href="/recipes/{recipe.id}">
 				<div class="flex flex-col justify-end h-64">

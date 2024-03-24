@@ -13,13 +13,14 @@
 </script>
 
 <div class="h-full text-white text-lg overflow-clip">
-	<div class="relative h-full transition-750" style:transform="translateX(-{current * 100}%)">
+	<div class="relative h-full transition-750" style:transform="translateX(-{current * 101}%)">
 		{#each images as image, index}
-			<div class="absolute w-full h-full rounded overflow-clip" style:left="{index * 100}%">
+			<div class="absolute w-full h-full rounded overflow-clip" style:left="{index * 101}%">
 				<button
-					class="block w-full h-full bg-cover bg-center transition-2000 hover:scale-105"
+					class="block w-full h-full bg-cover bg-center transition-2000"
+					class:hover:scale-105={index === current}
 					class:filter-blur-2={index !== current}
-					style:background-image="url({image})"
+					style:background-image="url({image}?thumbnail=banner)"
 					on:click={handleExpand}
 				/>
 

@@ -1,21 +1,34 @@
 package service
 
 import (
+	"bytes"
 	"context"
 	"database/sql"
+	"encoding"
 	"errors"
+	"image"
+	"image/jpeg"
+	"image/png"
 	"io"
 	"time"
 
+	"github.com/muesli/smartcrop"
+	"github.com/muesli/smartcrop/nfnt"
 	"github.com/rs/xid"
 	"github.com/spf13/viper"
 
 	"github.com/lukasdietrich/plaincooking/internal/database/models"
 )
 
+const (
+	mediaTypePng  = "image/png"
+	mediaTypeJpeg = "image/jpeg"
+)
+
 var (
-	_ io.WriteCloser = &assetWriter{}
-	_ io.Reader      = &assetReader{}
+	_ io.WriteCloser           = &assetWriter{}
+	_ io.Reader                = &assetReader{}
+	_ encoding.TextUnmarshaler = new(ThumbnailSize)
 )
 
 func init() {
@@ -173,4 +186,97 @@ func (r *assetReader) advanceChunk() error {
 	r.n = 0
 
 	return nil
+}
+
+type ThumbnailSize uint8
+
+const (
+	ThumbnailUnknown ThumbnailSize = iota
+	ThumbnailTile
+	ThumbnailBanner
+)
+
+func (s *ThumbnailSize) UnmarshalText(text []byte) error {
+	switch string(text) {
+	case "tile":
+		*s = ThumbnailTile
+	case "banner":
+		*s = ThumbnailBanner
+	default:
+		*s = ThumbnailUnknown
+	}
+
+	return nil
+}
+
+func (s *ThumbnailSize) dimensions() image.Point {
+	switch *s {
+	case ThumbnailTile:
+		return image.Point{X: 750, Y: 256}
+	case ThumbnailBanner:
+		return image.Point{X: 1000, Y: 300}
+	default:
+		return image.Point{X: 0, Y: 0}
+	}
+}
+
+func (s *AssetService) ThumbnailReader(ctx context.Context, id xid.ID, size ThumbnailSize) (*thumbnailReader, error) {
+	img, err := s.readImage(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+
+	resizer := nfnt.NewDefaultResizer()
+	analyzer := smartcrop.NewAnalyzer(resizer)
+	dimensions := size.dimensions()
+
+	crop, err := analyzer.FindBestCrop(img, dimensions.X, dimensions.Y)
+	if err != nil {
+		return nil, err
+	}
+
+	img = img.(interface {
+		SubImage(image.Rectangle) image.Image
+	}).SubImage(crop)
+
+	if img.Bounds().Dx() != dimensions.X || img.Bounds().Dy() != dimensions.Y {
+		img = resizer.Resize(img, uint(dimensions.X), uint(dimensions.Y))
+	}
+
+	var buffer bytes.Buffer
+
+	if err := jpeg.Encode(&buffer, img, nil); err != nil {
+		return nil, err
+	}
+
+	r := thumbnailReader{
+		Reader:    &buffer,
+		TotalSize: int64(buffer.Len()),
+		MediaType: mediaTypeJpeg,
+	}
+
+	return &r, nil
+}
+
+func (s *AssetService) readImage(ctx context.Context, id xid.ID) (image.Image, error) {
+	r, err := s.Reader(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+
+	if r.MediaType == mediaTypePng {
+		return png.Decode(r)
+	}
+
+	if r.MediaType == mediaTypeJpeg {
+		return jpeg.Decode(r)
+	}
+
+	return nil, image.ErrFormat
+}
+
+type thumbnailReader struct {
+	io.Reader
+	MediaType string
+	TotalSize int64
 }
