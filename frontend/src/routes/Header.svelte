@@ -2,7 +2,7 @@
 	import icon from '$lib/images/icon.png';
 </script>
 
-<header class="flex justify-between items-center h-14 bg-emerald-600 text-white">
+<header class="sticky top-0 flex justify-between items-center h-14 bg-emerald-600 text-white">
 	<a class="flex items-center h-full px-5 py-1 space-x-3" href="/">
 		<img class="h-full aspect-square" src={icon} alt="" />
 

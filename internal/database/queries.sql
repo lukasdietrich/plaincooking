@@ -21,9 +21,15 @@ insert into "recipe_metadata" (
 ) ;
 
 -- name: ListRecipeMetadata :many
-select *
-from "recipe_metadata"
-order by "title" asc ;
+select "r".*, (
+	select "a"."asset_id"
+	from "recipe_asset" "a"
+	where "a"."recipe_id" = "r"."recipe_id"
+	order by "a"."asset_id" desc
+	limit 1
+)
+from "recipe_metadata" "r"
+order by "r"."title" asc ;
 
 -- name: ReadRecipe :one
 select *
@@ -73,9 +79,12 @@ insert into "asset_chunk" (
 ) ;
 
 -- name: ReadAsset :one
-select "a".*, cast(sum(octet_length("c"."content")) as integer) "total_size"
+select "a".*, (
+	select sum(octet_length("c"."content")) "total_size"
+	from "asset_chunk" "c"
+	where "c"."asset_id" = "a"."id"
+)
 from "asset" "a"
-	inner join "asset_chunk" "c" on "a"."id" = "c"."asset_id"
 where "a"."id" = sqlc.arg(id) ;
 
 -- name: ReadAssetChunk :one

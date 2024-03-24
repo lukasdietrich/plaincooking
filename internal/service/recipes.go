@@ -28,7 +28,7 @@ func NewRecipeService(
 	}
 }
 
-func (s *RecipeService) List(ctx context.Context) ([]models.RecipeMetadata, error) {
+func (s *RecipeService) List(ctx context.Context) ([]models.ListRecipeMetadataRow, error) {
 	querier := s.transactions.Querier(ctx)
 	return querier.ListRecipeMetadata(ctx)
 }

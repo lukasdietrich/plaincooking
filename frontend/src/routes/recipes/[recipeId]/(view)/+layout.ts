@@ -1,4 +1,5 @@
 import type { LayoutLoad } from './$types';
+import { createApi } from '$lib/api';
 import { scale } from '$lib/recipe';
 
 function parseServings(url: URL): number | null {
@@ -13,11 +14,16 @@ function parseServings(url: URL): number | null {
 	return null;
 }
 
-export const load: LayoutLoad = async ({ parent, url }) => {
+export const load: LayoutLoad = async ({ fetch, parent, params, url }) => {
+	const { listRecipeImages } = createApi(fetch);
+
+	const { recipeId } = params;
 	const { recipe } = await parent();
+	const images = await listRecipeImages(recipeId);
 	const servings = parseServings(url) ?? recipe.metadata.servings;
 
 	return {
-		recipe: scale(recipe, servings)
+		recipe: scale(recipe, servings),
+		images
 	};
 };

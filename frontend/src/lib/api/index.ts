@@ -72,6 +72,18 @@ export function createApi(fetch?: typeof globalThis.fetch) {
 					}
 				})
 			);
+		},
+
+		listRecipeImages(recipeId: string) {
+			return handleResponse(
+				GET('/recipes/{recipeId}/images', {
+					params: {
+						path: {
+							recipeId
+						}
+					}
+				})
+			);
 		}
 	};
 }

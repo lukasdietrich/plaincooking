@@ -34,8 +34,9 @@ func NewRecipeController(recipes *service.RecipeService) *RecipeController {
 }
 
 type RecipeMetadataDto struct {
-	ID    xid.ID `json:"id"`
-	Title string `json:"title"`
+	ID        xid.ID `json:"id"`
+	Title     string `json:"title"`
+	ImageHref string `json:"imageHref"`
 } // @name RecipeMetadata
 
 type AssetMetadataDto struct {
@@ -176,6 +177,7 @@ func (c *RecipeController) Delete(ctx echo.Context) error {
 // @id       listRecipeImages
 // @tags     recipes assets
 // @router   /recipes/{recipeId}/images  [get]
+// @param    recipeId  path  string  true  "Recipe ID"
 // @produce  application/json
 // @success  200  {array}  AssetMetadataDto
 func (c *RecipeController) ListImages(ctx echo.Context) error {
