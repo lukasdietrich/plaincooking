@@ -115,7 +115,7 @@ func (s *RecipeService) ListImages(ctx context.Context, id xid.ID) ([]models.Ass
 	return querier.ListRecipeAssets(ctx, models.ListRecipeAssetsParams{RecipeID: id})
 }
 
-func (s *RecipeService) ImageWriter(ctx context.Context, id xid.ID, filename, mediaType string) (*assetWriter, error) {
+func (s *RecipeService) ImageWriter(ctx context.Context, id xid.ID, filename, mediaType string) (*AssetWriter, error) {
 	querier := s.transactions.Querier(ctx)
 
 	w, err := s.assets.Writer(ctx, filename, mediaType)

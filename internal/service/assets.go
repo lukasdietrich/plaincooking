@@ -1,11 +1,11 @@
 package service
 
 import (
-	"bytes"
 	"context"
 	"database/sql"
 	"encoding"
 	"errors"
+	"fmt"
 	"image"
 	"image/jpeg"
 	"image/png"
@@ -26,8 +26,8 @@ const (
 )
 
 var (
-	_ io.WriteCloser           = &assetWriter{}
-	_ io.Reader                = &assetReader{}
+	_ io.WriteCloser           = &AssetWriter{}
+	_ io.Reader                = &AssetReader{}
 	_ encoding.TextUnmarshaler = new(ThumbnailSize)
 )
 
@@ -45,7 +45,7 @@ func NewAssetService(transactions *TransactionService) *AssetService {
 	}
 }
 
-func (s *AssetService) Writer(ctx context.Context, filename, mediaTyp string) (*assetWriter, error) {
+func (s *AssetService) Writer(ctx context.Context, filename, mediaTyp string) (*AssetWriter, error) {
 	querier := s.transactions.Querier(ctx)
 
 	createAssetParams := models.CreateAssetParams{
@@ -60,7 +60,7 @@ func (s *AssetService) Writer(ctx context.Context, filename, mediaTyp string) (*
 		return nil, err
 	}
 
-	w := assetWriter{
+	w := AssetWriter{
 		Asset:   asset,
 		ctx:     ctx,
 		querier: querier,
@@ -70,7 +70,7 @@ func (s *AssetService) Writer(ctx context.Context, filename, mediaTyp string) (*
 	return &w, nil
 }
 
-func (s *AssetService) Reader(ctx context.Context, id xid.ID) (*assetReader, error) {
+func (s *AssetService) Reader(ctx context.Context, id xid.ID) (*AssetReader, error) {
 	querier := s.transactions.Querier(ctx)
 
 	asset, err := querier.ReadAsset(ctx, models.ReadAssetParams{ID: id})
@@ -78,7 +78,7 @@ func (s *AssetService) Reader(ctx context.Context, id xid.ID) (*assetReader, err
 		return nil, err
 	}
 
-	r := assetReader{
+	r := AssetReader{
 		ReadAssetRow: asset,
 		ctx:          ctx,
 		querier:      querier,
@@ -87,7 +87,7 @@ func (s *AssetService) Reader(ctx context.Context, id xid.ID) (*assetReader, err
 	return &r, nil
 }
 
-type assetWriter struct {
+type AssetWriter struct {
 	models.Asset
 
 	ctx     context.Context
@@ -97,11 +97,11 @@ type assetWriter struct {
 	n      int
 }
 
-func (w *assetWriter) Close() error {
+func (w *AssetWriter) Close() error {
 	return w.flushChunk(true)
 }
 
-func (w *assetWriter) Write(b []byte) (int, error) {
+func (w *AssetWriter) Write(b []byte) (int, error) {
 	l := 0
 
 	for l < len(b) {
@@ -118,7 +118,7 @@ func (w *assetWriter) Write(b []byte) (int, error) {
 	return l, nil
 }
 
-func (w *assetWriter) flushChunk(always bool) error {
+func (w *AssetWriter) flushChunk(always bool) error {
 	if w.n == 0 {
 		return nil
 	}
@@ -141,7 +141,7 @@ func (w *assetWriter) flushChunk(always bool) error {
 	return nil
 }
 
-type assetReader struct {
+type AssetReader struct {
 	models.ReadAssetRow
 
 	ctx     context.Context
@@ -152,7 +152,7 @@ type assetReader struct {
 	n      int
 }
 
-func (r *assetReader) Read(b []byte) (int, error) {
+func (r *AssetReader) Read(b []byte) (int, error) {
 	if r.n < len(r.buffer) {
 		n := copy(b, r.buffer[r.n:])
 		r.n += n
@@ -167,7 +167,7 @@ func (r *assetReader) Read(b []byte) (int, error) {
 	return r.Read(b)
 }
 
-func (r *assetReader) advanceChunk() error {
+func (r *AssetReader) advanceChunk() error {
 	chunk, err := r.querier.ReadAssetChunk(r.ctx, models.ReadAssetChunkParams{
 		AssetID:  r.ID,
 		IDOffset: r.offset,
@@ -196,6 +196,17 @@ const (
 	ThumbnailBanner
 )
 
+func (s ThumbnailSize) String() string {
+	switch s {
+	case ThumbnailTile:
+		return "tile"
+	case ThumbnailBanner:
+		return "banner"
+	default:
+		return "unknown"
+	}
+}
+
 func (s *ThumbnailSize) UnmarshalText(text []byte) error {
 	switch string(text) {
 	case "tile":
@@ -220,7 +231,67 @@ func (s *ThumbnailSize) dimensions() image.Point {
 	}
 }
 
-func (s *AssetService) ThumbnailReader(ctx context.Context, id xid.ID, size ThumbnailSize) (*thumbnailReader, error) {
+func (s *AssetService) ThumbnailReader(ctx context.Context, id xid.ID, size ThumbnailSize) (*AssetReader, error) {
+	querier := s.transactions.Querier(ctx)
+
+	readAssetThumbnailParams := models.ReadAssetThumbnailParams{
+		AssetID: id,
+		Size:    size.String(),
+	}
+
+	thumbnail, err := querier.ReadAssetThumbnail(ctx, readAssetThumbnailParams)
+	if errors.Is(err, sql.ErrNoRows) {
+		newThumbnailId, err := s.persistThumbnail(ctx, id, size)
+		if err != nil {
+			return nil, err
+		}
+
+		return s.Reader(ctx, newThumbnailId)
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	return s.Reader(ctx, thumbnail.ThumbnailAssetID)
+}
+
+func (s *AssetService) persistThumbnail(ctx context.Context, id xid.ID, size ThumbnailSize) (xid.ID, error) {
+	img, err := s.generateThumbnail(ctx, id, size)
+	if err != nil {
+		return xid.NilID(), err
+	}
+
+	filename := fmt.Sprintf("%s.thumbnail-%s.jpeg", id, size)
+
+	w, err := s.Writer(ctx, filename, mediaTypeJpeg)
+	if err != nil {
+		return xid.NilID(), err
+	}
+
+	if err := jpeg.Encode(w, img, &jpeg.Options{Quality: 80}); err != nil {
+		return xid.NilID(), err
+	}
+
+	if err := w.Close(); err != nil {
+		return xid.NilID(), err
+	}
+
+	createAssetThumbnailParams := models.CreateAssetThumbnailParams{
+		AssetID:          id,
+		ThumbnailAssetID: w.ID,
+		Size:             size.String(),
+	}
+
+	querier := s.transactions.Querier(ctx)
+	if err := querier.CreateAssetThumbnail(ctx, createAssetThumbnailParams); err != nil {
+		return xid.NilID(), err
+	}
+
+	return w.ID, nil
+}
+
+func (s *AssetService) generateThumbnail(ctx context.Context, id xid.ID, size ThumbnailSize) (image.Image, error) {
 	img, err := s.readImage(ctx, id)
 	if err != nil {
 		return nil, err
@@ -243,19 +314,7 @@ func (s *AssetService) ThumbnailReader(ctx context.Context, id xid.ID, size Thum
 		img = resizer.Resize(img, uint(dimensions.X), uint(dimensions.Y))
 	}
 
-	var buffer bytes.Buffer
-
-	if err := jpeg.Encode(&buffer, img, nil); err != nil {
-		return nil, err
-	}
-
-	r := thumbnailReader{
-		Reader:    &buffer,
-		TotalSize: int64(buffer.Len()),
-		MediaType: mediaTypeJpeg,
-	}
-
-	return &r, nil
+	return img, nil
 }
 
 func (s *AssetService) readImage(ctx context.Context, id xid.ID) (image.Image, error) {
@@ -273,10 +332,4 @@ func (s *AssetService) readImage(ctx context.Context, id xid.ID) (image.Image, e
 	}
 
 	return nil, image.ErrFormat
-}
-
-type thumbnailReader struct {
-	io.Reader
-	MediaType string
-	TotalSize int64
 }

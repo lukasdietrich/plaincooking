@@ -110,3 +110,20 @@ from "asset" "a"
 	inner join "recipe_asset" "r" on "a"."id" = "r"."asset_id"
 where "r"."recipe_id" = sqlc.arg(recipe_id)
 order by "a"."id" desc ;
+
+-- name: CreateAssetThumbnail :exec
+insert into "asset_thumbnail" (
+	"asset_id" ,
+	"thumbnail_asset_id" ,
+	"size"
+) values (
+	sqlc.arg(asset_id) ,
+	sqlc.arg(thumbnail_asset_id) ,
+	sqlc.arg(size)
+) ;
+
+-- name: ReadAssetThumbnail :one
+select *
+from "asset_thumbnail"
+where "asset_id" = sqlc.arg(asset_id)
+  and "size" = sqlc.arg(size) ;

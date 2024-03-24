@@ -302,33 +302,21 @@ func (c *AssetController) Download(ctx echo.Context) error {
 		return err
 	}
 
+	r, err := c.reader(ctx, req)
+	if err != nil {
+		return err
+	}
+
+	header := ctx.Response().Header()
+	header.Add(echo.HeaderContentLength, fmt.Sprintf("%d", r.TotalSize))
+
+	return ctx.Stream(http.StatusOK, r.MediaType, r)
+}
+
+func (c *AssetController) reader(ctx echo.Context, req DownloadAssetRequest) (*service.AssetReader, error) {
 	if req.Thumbnail != service.ThumbnailUnknown {
-		return c.downloadThumbnail(ctx, req)
+		return c.assets.ThumbnailReader(ctx.Request().Context(), req.ID, req.Thumbnail)
 	}
 
-	return c.downloadOriginal(ctx, req)
-}
-
-func (c *AssetController) downloadOriginal(ctx echo.Context, req DownloadAssetRequest) error {
-	r, err := c.assets.Reader(ctx.Request().Context(), req.ID)
-	if err != nil {
-		return err
-	}
-
-	header := ctx.Response().Header()
-	header.Add(echo.HeaderContentLength, fmt.Sprintf("%d", r.TotalSize))
-
-	return ctx.Stream(http.StatusOK, r.MediaType, r)
-}
-
-func (c *AssetController) downloadThumbnail(ctx echo.Context, req DownloadAssetRequest) error {
-	r, err := c.assets.ThumbnailReader(ctx.Request().Context(), req.ID, req.Thumbnail)
-	if err != nil {
-		return err
-	}
-
-	header := ctx.Response().Header()
-	header.Add(echo.HeaderContentLength, fmt.Sprintf("%d", r.TotalSize))
-
-	return ctx.Stream(http.StatusOK, r.MediaType, r)
+	return c.assets.Reader(ctx.Request().Context(), req.ID)
 }
