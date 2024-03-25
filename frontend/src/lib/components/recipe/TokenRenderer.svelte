@@ -28,5 +28,6 @@
 		<svelte:self token={token.children} />
 	</strong>
 {:else if token.type === 'text'}
+	<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 	{@html token.text}
 {/if}
