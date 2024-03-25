@@ -6,7 +6,7 @@ SRC.GO = $(wildcard cmd/**/*.go) $(wildcard internal/**/*.go)
 # Generated Files
 GEN                 = $(GEN.WIRE) $(GEN.SQLC) $(GEN.API_TYPES) $(GEN.FRONTEND)
 GEN.WIRE            = cmd/plaincooking/wire_gen.go
-SRC.WIRE            = cmd/plaincooking/wire.go
+SRC.WIRE            = $(filter-out $(SRC.GO), cmd/plaincooking/wire.go)
 GEN.SQLC            = internal/database/models
 GEN.SQLC.QUERIES    = $(GEN.SQLC)/queries.sql_gen.go
 SRC.SQLC.MIGRATIONS = $(wildcard internal/database/migrations/*.sql)
@@ -27,7 +27,6 @@ WIRE               = $(GO) run github.com/google/wire/cmd/wire@v0.6.0
 NPM                = npm --prefix frontend
 NPX                = cd frontend; npx
 SWAGGER_TO_OPENAPI = $(NPX) swagger2openapi
-OPENAPI_TYPESCRIPT = $(NPX) openapi-typescript
 
 .PHONY: all
 all: clean build
@@ -69,10 +68,7 @@ $(GEN.FRONTEND): $(GEN.API_TYPES) $(GEN.NODE_MODULES)
 	$(NPM) run build
 
 $(GEN.API_TYPES): $(GEN.OPENAPI) $(GEN.NODE_MODULES)
-	$(OPENAPI_TYPESCRIPT) \
-		$(abspath $(GEN.OPENAPI)) \
-		--output $(abspath $(GEN.API_TYPES)) \
-		--immutable
+	$(NPM) run generate:openapi
 
 $(GEN.SWAGGER): $(SRC.SWAGGER) | $(TARGET)
 	$(SWAG) init \

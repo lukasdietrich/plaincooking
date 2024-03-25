@@ -5,10 +5,13 @@
 	import { t } from '$lib/i18n';
 	import { ActionPortal, Action } from '$lib/components/actions';
 	import { Header } from '$lib/components/recipe';
+	import { Gallery } from '$lib/components/gallery';
 
 	export let data: LayoutData;
 
+	$: recipeId = $page.params.recipeId;
 	$: recipe = data.recipe;
+	$: images = data.images;
 </script>
 
 <ActionPortal>
@@ -18,6 +21,7 @@
 </ActionPortal>
 
 <article class="flex flex-col space-y-5">
+	<Gallery {recipeId} {images} />
 	<Header {recipe} />
 	<slot />
 </article>

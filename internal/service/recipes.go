@@ -6,29 +6,37 @@ import (
 
 	"github.com/rs/xid"
 
-	"github.com/lukasdietrich/plaincooking/internal/database"
 	"github.com/lukasdietrich/plaincooking/internal/database/models"
 	"github.com/lukasdietrich/plaincooking/internal/parser"
 )
 
 type RecipeService struct {
-	querier database.Querier
-	parser  *parser.RecipeParser
+	transactions *TransactionService
+	assets       *AssetService
+	parser       *parser.RecipeParser
 }
 
-func NewRecipeService(querier database.Querier, parser *parser.RecipeParser) *RecipeService {
+func NewRecipeService(
+	transactions *TransactionService,
+	assets *AssetService,
+	parser *parser.RecipeParser,
+) *RecipeService {
 	return &RecipeService{
-		querier: querier,
-		parser:  parser,
+		transactions: transactions,
+		assets:       assets,
+		parser:       parser,
 	}
 }
 
-func (s *RecipeService) List(ctx context.Context) ([]models.RecipeMetadata, error) {
-	return s.querier.ListRecipeMetadata(ctx)
+func (s *RecipeService) List(ctx context.Context) ([]models.ListRecipeMetadataRow, error) {
+	querier := s.transactions.Querier(ctx)
+	return querier.ListRecipeMetadata(ctx)
 }
 
 func (s *RecipeService) Read(ctx context.Context, id xid.ID) ([]byte, error) {
-	recipe, err := s.querier.ReadRecipe(ctx, models.ReadRecipeParams{ID: id})
+	querier := s.transactions.Querier(ctx)
+
+	recipe, err := querier.ReadRecipe(ctx, models.ReadRecipeParams{ID: id})
 	if err != nil {
 		return nil, err
 	}
@@ -37,12 +45,7 @@ func (s *RecipeService) Read(ctx context.Context, id xid.ID) ([]byte, error) {
 }
 
 func (s *RecipeService) Create(ctx context.Context, content []byte) (xid.ID, error) {
-	querier, tx, err := s.querier.Begin(ctx)
-	if err != nil {
-		return xid.NilID(), err
-	}
-
-	defer tx.Rollback() // nolint:errcheck
+	querier := s.transactions.Querier(ctx)
 
 	meta, err := s.parser.ParseRecipe(content)
 	if err != nil {
@@ -68,20 +71,11 @@ func (s *RecipeService) Create(ctx context.Context, content []byte) (xid.ID, err
 		return xid.NilID(), err
 	}
 
-	if err := tx.Commit(); err != nil {
-		return xid.NilID(), err
-	}
-
 	return createRecipeParams.ID, nil
 }
 
 func (s *RecipeService) Update(ctx context.Context, id xid.ID, content []byte) error {
-	querier, tx, err := s.querier.Begin(ctx)
-	if err != nil {
-		return err
-	}
-
-	defer tx.Rollback() // nolint:errcheck
+	querier := s.transactions.Querier(ctx)
 
 	meta, err := s.parser.ParseRecipe(content)
 	if err != nil {
@@ -107,10 +101,36 @@ func (s *RecipeService) Update(ctx context.Context, id xid.ID, content []byte) e
 		return err
 	}
 
-	return tx.Commit()
+	return nil
 }
 
 func (s *RecipeService) Delete(ctx context.Context, id xid.ID) error {
-	_, err := s.querier.DeleteRecipe(ctx, models.DeleteRecipeParams{ID: id})
+	querier := s.transactions.Querier(ctx)
+	_, err := querier.DeleteRecipe(ctx, models.DeleteRecipeParams{ID: id})
 	return err
+}
+
+func (s *RecipeService) ListImages(ctx context.Context, id xid.ID) ([]models.Asset, error) {
+	querier := s.transactions.Querier(ctx)
+	return querier.ListRecipeAssets(ctx, models.ListRecipeAssetsParams{RecipeID: id})
+}
+
+func (s *RecipeService) ImageWriter(ctx context.Context, id xid.ID, filename, mediaType string) (*AssetWriter, error) {
+	querier := s.transactions.Querier(ctx)
+
+	w, err := s.assets.Writer(ctx, filename, mediaType)
+	if err != nil {
+		return nil, err
+	}
+
+	createRecipeAssetParams := models.CreateRecipeAssetParams{
+		RecipeID: id,
+		AssetID:  w.ID,
+	}
+
+	if err := querier.CreateRecipeAsset(ctx, createRecipeAssetParams); err != nil {
+		return nil, err
+	}
+
+	return w, nil
 }

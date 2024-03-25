@@ -18,22 +18,25 @@ func init() {
 func Open() (*sql.DB, error) {
 	dsn := buildDataSourceName()
 
-	conn, err := sql.Open("sqlite3", dsn)
+	db, err := sql.Open("sqlite3", dsn)
 	if err != nil {
 		return nil, fmt.Errorf("could not open database: %w", err)
 	}
 
-	if err := migrateUp(conn); err != nil {
+	db.SetMaxOpenConns(1)
+
+	if err := migrateUp(db); err != nil {
 		return nil, fmt.Errorf("could not migrate database: %w", err)
 	}
 
-	return conn, nil
+	return db, nil
 }
 
 func buildDataSourceName() string {
 	opts := make(url.Values)
 	opts.Add("_foreign_keys", "true")
 	opts.Add("_journal_mode", viper.GetString("database.journalmode"))
+	opts.Add("cache", "shared")
 
 	dsn := url.URL{
 		Scheme:   "file",

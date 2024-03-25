@@ -19,7 +19,7 @@ func init() {
 	viper.SetDefault("database.migration.tablename", "migrations")
 }
 
-func migrateUp(conn *sql.DB) error {
+func migrateUp(db *sql.DB) error {
 	config := sqlite3.Config{
 		MigrationsTable: viper.GetString("database.migration.tablename"),
 	}
@@ -29,7 +29,7 @@ func migrateUp(conn *sql.DB) error {
 		return fmt.Errorf("could not load migrations: %w", err)
 	}
 
-	database, err := sqlite3.WithInstance(conn, &config)
+	database, err := sqlite3.WithInstance(db, &config)
 	if err != nil {
 		return fmt.Errorf("could not create database driver: %w", err)
 	}
