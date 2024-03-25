@@ -18,7 +18,7 @@
 </script>
 
 <header>
-	<div class="flex space-x-2 mb-5 text-sm">
+	<div class="flex flex-wrap mb-5 text-sm badges">
 		<div class="flex items-center space-x-2 rounded-full bg-yellow-200 text-yellow-900 px-3 py-1">
 			<i class="icon-utensils"></i>
 
@@ -37,6 +37,13 @@
 			</button>
 		</div>
 
+		{#if metadata.source}
+			<div class="flex items-center space-x-2 rounded-full bg-purple-200 text-purple-900 px-3 py-1">
+				<i class="icon-earth"></i>
+				<a href={metadata.source} target="_blank">{new URL(metadata.source).hostname}</a>
+			</div>
+		{/if}
+
 		{#each metadata.tags as tag}
 			<div class="flex items-center space-x-1 rounded-full bg-blue-200 text-blue-900 px-3 py-1">
 				<i class="icon-hash"></i>
@@ -47,3 +54,9 @@
 
 	<TokenRenderer token={recipe.intro} />
 </header>
+
+<style>
+	.badges > div {
+		--at-apply: mb-2 mr-2;
+	}
+</style>
