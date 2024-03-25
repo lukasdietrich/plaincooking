@@ -6,8 +6,7 @@
 	import '@fontsource-variable/inconsolata';
 
 	import { page } from '$app/stores';
-
-	import Header from './Header.svelte';
+	import { Header } from '$lib/components/wrapper';
 
 	$: title = $page.data['title'] ?? 'Plaincooking';
 </script>

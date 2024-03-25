@@ -48,7 +48,7 @@
 				on:change={handleFileChange}
 			/>
 
-			<button class="right-0 rounded-r arrow" on:click={() => current++}>
+			<button class="right-0 rounded-r arrow" on:click={() => (current = 0)}>
 				<i class="icon-arrow-right"></i>
 			</button>
 		</div>
@@ -63,12 +63,12 @@
 					on:click={() => handleSpotlight(image)}
 				/>
 
-				<button class="left-0 rounded-l arrow" on:click={() => current--}>
+				<button class="left-0 rounded-l arrow" on:click={() => (current = index - 1)}>
 					<i class:icon-arrow-left={index > 0} class:icon-image-up={index === 0}></i>
 				</button>
 
 				{#if index < images.length - 1}
-					<button class="right-0 rounded-r arrow" on:click={() => current++}>
+					<button class="right-0 rounded-r arrow" on:click={() => (current = index + 1)}>
 						<i class="icon-arrow-right"></i>
 					</button>
 				{/if}
