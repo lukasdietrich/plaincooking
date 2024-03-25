@@ -9,6 +9,7 @@
 
 	export let data: LayoutData;
 
+	$: recipeId = $page.params.recipeId;
 	$: recipe = data.recipe;
 	$: images = data.images;
 </script>
@@ -20,7 +21,7 @@
 </ActionPortal>
 
 <article class="flex flex-col space-y-5">
-	<Gallery {images} />
+	<Gallery {recipeId} {images} />
 	<Header {recipe} />
 	<slot />
 </article>

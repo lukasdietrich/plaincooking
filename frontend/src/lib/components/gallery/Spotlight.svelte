@@ -25,6 +25,7 @@
 	<img src={image.href} alt={image.id} on:load={() => (loading = false)} />
 
 	<button class="absolute right-3 top-3 rounded text-white text-lg" on:click={handleClose}>
-		<i class="icon-x bg-black/30 backdrop-blur-10 p-2 rounded-full hover:bg-red-600/50"></i>
+		<i class="icon-x bg-black/30 backdrop-blur-10 p-2 rounded-full transition hover:bg-red-600/50"
+		></i>
 	</button>
 </div>
