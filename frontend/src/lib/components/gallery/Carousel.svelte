@@ -1,14 +1,15 @@
 <script lang="ts">
+	import type { components } from '$lib/api';
 	import { createEventDispatcher } from 'svelte';
 
-	export let images: string[] = [];
+	export let images: components['schemas']['AssetMetadata'][] = [];
 
 	const dispatch = createEventDispatcher();
 
 	let current = 0;
 
-	function handleExpand() {
-		dispatch('expand');
+	function handleSpotlight(image: components['schemas']['AssetMetadata']) {
+		dispatch('spotlight', image);
 	}
 </script>
 
@@ -20,8 +21,8 @@
 					class="block w-full h-full bg-cover bg-center transition-2000"
 					class:hover:scale-105={index === current}
 					class:filter-blur-2={index !== current}
-					style:background-image="url({image}?thumbnail=banner)"
-					on:click={handleExpand}
+					style:background-image="url({image.href}?thumbnail=banner)"
+					on:click={() => handleSpotlight(image)}
 				/>
 
 				{#if index > 0}
