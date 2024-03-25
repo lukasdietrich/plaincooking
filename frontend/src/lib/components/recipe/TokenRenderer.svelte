@@ -28,5 +28,5 @@
 		<svelte:self token={token.children} />
 	</strong>
 {:else if token.type === 'text'}
-	{token.text}
+	{@html token.text}
 {/if}
