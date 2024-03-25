@@ -1,19 +1,21 @@
 <script lang="ts">
 	import type { components } from '$lib/api';
 	import { createEventDispatcher } from 'svelte';
+	import { dragOnBody, dropOnBody } from '$lib/actions/drag';
 
 	export let images: components['schemas']['AssetMetadata'][] = [];
 
 	const dispatch = createEventDispatcher();
 
-	let current = 0;
+	let current = -1;
+	$: current = getInitialCurrent(images);
 
-	$: {
+	function getInitialCurrent<T>(images: T[]) {
 		if (images.length > 0) {
-			current = 0;
-		} else {
-			current = -1;
+			return 0;
 		}
+
+		return -1;
 	}
 
 	function handleSpotlight(image: components['schemas']['AssetMetadata']) {
@@ -27,6 +29,10 @@
 		if (file) {
 			dispatch('upload', file);
 		}
+	}
+
+	function handleFileDrop({ detail }: CustomEvent<File>) {
+		dispatch('upload', detail);
 	}
 </script>
 
@@ -46,6 +52,11 @@
 				class="hidden"
 				accept="image/png, image/jpeg"
 				on:change={handleFileChange}
+				on:dragEnterBody={() => (current = -1)}
+				on:dragLeaveBody={() => (current = getInitialCurrent(images))}
+				on:dropBody={handleFileDrop}
+				use:dragOnBody
+				use:dropOnBody
 			/>
 
 			<button class="right-0 rounded-r arrow" on:click={() => (current = 0)}>
