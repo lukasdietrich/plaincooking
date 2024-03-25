@@ -27,7 +27,6 @@ WIRE               = $(GO) run github.com/google/wire/cmd/wire@v0.6.0
 NPM                = npm --prefix frontend
 NPX                = cd frontend; npx
 SWAGGER_TO_OPENAPI = $(NPX) swagger2openapi
-OPENAPI_TYPESCRIPT = $(NPX) openapi-typescript
 
 .PHONY: all
 all: clean build
@@ -69,10 +68,7 @@ $(GEN.FRONTEND): $(GEN.API_TYPES) $(GEN.NODE_MODULES)
 	$(NPM) run build
 
 $(GEN.API_TYPES): $(GEN.OPENAPI) $(GEN.NODE_MODULES)
-	$(OPENAPI_TYPESCRIPT) \
-		$(abspath $(GEN.OPENAPI)) \
-		--output $(abspath $(GEN.API_TYPES)) \
-		--immutable
+	$(NPM) run generate:openapi
 
 $(GEN.SWAGGER): $(SRC.SWAGGER) | $(TARGET)
 	$(SWAG) init \
