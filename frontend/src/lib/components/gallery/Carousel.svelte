@@ -59,9 +59,11 @@
 				use:dropOnBody
 			/>
 
-			<button class="right-0 rounded-r arrow" on:click={() => (current = 0)}>
-				<i class="icon-arrow-right"></i>
-			</button>
+			{#if images.length > 0}
+				<button class="right-0 rounded-r arrow" on:click={() => (current = 0)}>
+					<i class="icon-arrow-right"></i>
+				</button>
+			{/if}
 		</div>
 
 		{#each images as image, index}
