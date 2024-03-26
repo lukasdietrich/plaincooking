@@ -1,4 +1,4 @@
-import type { operations, paths } from './types.gen';
+import type { paths } from './types.gen';
 import type { ClientOptions, FetchResponse, BodySerializer } from 'openapi-fetch';
 import createClient from 'openapi-fetch';
 
@@ -101,7 +101,7 @@ export function createApi(fetch?: typeof globalThis.fetch) {
 						const formData = new FormData();
 						formData.append('image', image);
 						return formData;
-					},
+					}
 				})
 			);
 		}

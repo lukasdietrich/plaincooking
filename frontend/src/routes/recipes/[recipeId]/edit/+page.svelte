@@ -7,9 +7,11 @@
 	import { t } from '$lib/i18n';
 	import { ActionPortal, Action } from '$lib/components/actions';
 	import { Editor } from '$lib/components/editor';
-	import Modal from '$lib/components/Modal.svelte';
+	import { Modal, ModalButton } from '$lib/components/modal';
 
 	const BooleanModal = Modal<boolean>;
+	const BooleanButton = ModalButton<boolean>;
+
 	const { deleteRecipe, updateRecipe } = createApi();
 
 	export let data: PageData;
@@ -51,21 +53,16 @@
 
 <Editor bind:value={content} />
 
-<BooleanModal bind:this={deleteModal} let:close>
+<BooleanModal bind:this={deleteModal}>
 	<p>{$t('recipe.modal.delete')}</p>
 
 	<div class="flex justify-end space-x-5 mt-5">
-		<button
-			class="bg-gray-200 px-3 py-1 transition hover:(text-white bg-blue)"
-			on:click={() => close(false)}
-		>
+		<BooleanButton result={false}>
 			{$t('actions.no')}
-		</button>
-		<button
-			class="bg-gray-200 px-3 py-1 transition hover:(text-white bg-red)"
-			on:click={() => close(true)}
-		>
+		</BooleanButton>
+
+		<BooleanButton result={true}>
 			{$t('actions.yes')}
-		</button>
+		</BooleanButton>
 	</div>
 </BooleanModal>

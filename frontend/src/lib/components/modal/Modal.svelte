@@ -1,4 +1,6 @@
 <script lang="ts" generics="T">
+	import { setClose } from './context';
+
 	let dialog: HTMLDialogElement;
 	// eslint-disable-next-line no-undef
 	let resolve: ((value: T | undefined) => void) | undefined;
@@ -15,7 +17,7 @@
 	};
 
 	// eslint-disable-next-line no-undef
-	const close = (value: T | undefined) => {
+	const close = (value?: T) => {
 		dialog.close();
 
 		if (resolve) {
@@ -23,13 +25,16 @@
 			resolve = undefined;
 		}
 	};
+
+	// eslint-disable-next-line no-undef
+	setClose<T>(close);
 </script>
 
 <dialog bind:this={dialog} class="bg-white rounded-sm shadow-sm shadow-black/30">
 	<div class="relative px-10 py-8">
 		<div class="absolute top-0 right-0">
 			<button
-				on:click={() => close(undefined)}
+				on:click={() => close()}
 				class="flex items-center text-sm px-2 py-1 transition hover:(bg-red text-white)"
 			>
 				<i class="icon-x"></i>
