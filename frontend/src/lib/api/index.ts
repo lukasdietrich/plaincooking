@@ -1,4 +1,4 @@
-import type { paths } from './types.gen';
+import type { operations, paths } from './types.gen';
 import type { ClientOptions, FetchResponse, BodySerializer } from 'openapi-fetch';
 import createClient from 'openapi-fetch';
 
@@ -6,16 +6,6 @@ export * from './types.gen';
 
 const jsonSerializer: BodySerializer<never> = (body) => JSON.stringify(body);
 const textSerializer: BodySerializer<never> = (body) => body;
-const formSerializer: BodySerializer<never> = (body) => {
-	const files = <Record<string, File>>(<never>body);
-	const formData = new FormData();
-
-	for (const [name, file] of Object.entries(files)) {
-		formData.append(name, file);
-	}
-
-	return formData;
-};
 
 const options: ClientOptions = {
 	baseUrl: '/api',
@@ -107,7 +97,11 @@ export function createApi(fetch?: typeof globalThis.fetch) {
 					body: {
 						image
 					},
-					bodySerializer: formSerializer
+					bodySerializer({ image }) {
+						const formData = new FormData();
+						formData.append('image', image);
+						return formData;
+					},
 				})
 			);
 		}
