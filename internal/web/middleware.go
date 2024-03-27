@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/labstack/echo/v4"
+
 	"github.com/lukasdietrich/plaincooking/internal/service"
 )
 

@@ -20,6 +20,7 @@ func NewRouter(
 
 	r.Use(middleware.Recover())
 	r.Use(middleware.Gzip())
+	r.Use(marshalApiError())
 	r.Use(logError())
 	r.Use(handleBusinessError())
 	r.Use(middleware.StaticWithConfig(middleware.StaticConfig{

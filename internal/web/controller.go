@@ -16,7 +16,15 @@ const (
 	MediaTypeMarkdown = "text/markdown"
 )
 
-type PlaincookingApiError echo.HTTPError // @name PlaincookingApiError
+type ApiError struct {
+	Status   int    `json:"status"`
+	Code     string `json:"code"`
+	Internal error  `json:"-"`
+} // @name PlaincookingApiError
+
+func (e ApiError) Error() string {
+	return fmt.Sprintf("api error status=%d, code=%q: %v", e.Status, e.Code, e.Internal)
+}
 
 // @title     PlainCooking API
 // @version   0.1
@@ -71,8 +79,8 @@ type CreateRecipeResponse struct {
 // @produce  application/json
 // @param    content  body  string  true  "Recipe content"
 // @success  201  {object}  CreateRecipeResponse
-// @failure  400  {object}  PlaincookingApiError
-// @failure  422  {object}  PlaincookingApiError
+// @failure  400  {object}  ApiError
+// @failure  422  {object}  ApiError
 func (c *RecipeController) Create(ctx echo.Context) error {
 	content, err := c.readMarkdownRequest(ctx)
 	if err != nil {
@@ -98,8 +106,8 @@ type ReadRecipeRequest struct {
 // @produce  text/markdown
 // @param    recipeId  path  string  true  "Recipe ID"
 // @success  200  {string}  string
-// @failure  400  {object}  PlaincookingApiError
-// @failure  404  {object}  PlaincookingApiError
+// @failure  400  {object}  ApiError
+// @failure  404  {object}  ApiError
 func (c *RecipeController) Read(ctx echo.Context) error {
 	var req ReadRecipeRequest
 	if err := ctx.Bind(&req); err != nil {
@@ -126,10 +134,10 @@ type UpdateRecipeRequest struct {
 // @param    recipeId  path  string  true  "Recipe ID"
 // @param    content  body  string  true  "Recipe content"
 // @success  204
-// @failure  400  {object}  PlaincookingApiError
-// @failure  404  {object}  PlaincookingApiError
-// @failure  409  {object}  PlaincookingApiError
-// @failure  422  {object}  PlaincookingApiError
+// @failure  400  {object}  ApiError
+// @failure  404  {object}  ApiError
+// @failure  409  {object}  ApiError
+// @failure  422  {object}  ApiError
 func (c *RecipeController) Update(ctx echo.Context) error {
 	var req UpdateRecipeRequest
 	if err := ctx.Bind(&req); err != nil {
@@ -158,8 +166,8 @@ type DeleteRecipeRequest struct {
 // @router   /recipes/{recipeId}  [delete]
 // @param    recipeId  path  string  true  "Recipe ID"
 // @success  204
-// @failure  400  {object}  PlaincookingApiError
-// @failure  404  {object}  PlaincookingApiError
+// @failure  400  {object}  ApiError
+// @failure  404  {object}  ApiError
 func (c *RecipeController) Delete(ctx echo.Context) error {
 	var req DeleteRecipeRequest
 	if err := ctx.Bind(&req); err != nil {
@@ -207,9 +215,9 @@ type UploadRecipeImageRequest struct {
 // @param    recipeId  path  string  true  "Recipe ID"
 // @param    image  formData  file  true  "Image"
 // @success  201  {object}  AssetMetadataDto
-// @failure  400  {object}  PlaincookingApiError
-// @failure  404  {object}  PlaincookingApiError
-// @failure  422  {object}  PlaincookingApiError
+// @failure  400  {object}  ApiError
+// @failure  404  {object}  ApiError
+// @failure  422  {object}  ApiError
 func (c *RecipeController) UploadImage(ctx echo.Context) error {
 	var req UploadRecipeImageRequest
 	if err := ctx.Bind(&req); err != nil {
@@ -294,8 +302,8 @@ type DownloadAssetRequest struct {
 // @param    assetId  path  string  true  "Asset ID"
 // @param    thumbnail  query  string  false  "Thumbnail version of an image"
 // @success  200  {blob}  blob
-// @failure  400  {object}  PlaincookingApiError
-// @failure  404  {object}  PlaincookingApiError
+// @failure  400  {object}  ApiError
+// @failure  404  {object}  ApiError
 func (c *AssetController) Download(ctx echo.Context) error {
 	var req DownloadAssetRequest
 	if err := ctx.Bind(&req); err != nil {

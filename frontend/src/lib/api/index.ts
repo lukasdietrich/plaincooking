@@ -113,8 +113,8 @@ async function handleResponse<T, O>(responsePromise: Promise<FetchResponse<T, O>
 	const { error, data } = await responsePromise;
 
 	if (error) {
-		if (typeof error === 'object' && 'message' in error) {
-			notifyError(error);
+		if (typeof error === 'object' && 'code' in error && 'status' in error) {
+			notifyError(<components['schemas']['PlaincookingApiError']>error);
 		}
 
 		throw error;
@@ -126,6 +126,6 @@ async function handleResponse<T, O>(responsePromise: Promise<FetchResponse<T, O>
 function notifyError(error: components['schemas']['PlaincookingApiError']) {
 	notify({
 		type: 'error',
-		text: String(error.message)
+		text: error.code
 	});
 }
