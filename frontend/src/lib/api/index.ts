@@ -1,6 +1,7 @@
-import type { paths } from './types.gen';
+import type { components, paths } from './types.gen';
 import type { ClientOptions, FetchResponse, BodySerializer } from 'openapi-fetch';
 import createClient from 'openapi-fetch';
+import { notify } from '$lib/components/notifications';
 
 export * from './types.gen';
 
@@ -112,8 +113,19 @@ async function handleResponse<T, O>(responsePromise: Promise<FetchResponse<T, O>
 	const { error, data } = await responsePromise;
 
 	if (error) {
+		if (typeof error === 'object' && 'message' in error) {
+			notifyError(error);
+		}
+
 		throw error;
 	}
 
 	return data!;
+}
+
+function notifyError(error: components['schemas']['PlaincookingApiError']) {
+	notify({
+		type: 'error',
+		text: String(error.message)
+	});
 }

@@ -7,6 +7,7 @@
 
 	import { page } from '$app/stores';
 	import { Header } from '$lib/components/wrapper';
+	import { Notifications } from '$lib/components/notifications';
 
 	$: title = $page.data['title'] ?? 'Plaincooking';
 </script>
@@ -17,6 +18,7 @@
 
 <div class="min-h-screen bg-white font-sans">
 	<Header />
+	<Notifications />
 
 	<main class="max-w-screen-lg mx-auto p-5">
 		<slot />
