@@ -22,5 +22,29 @@
 		"modal": {
 			"delete": "Rezept löschen?"
 		}
+	},
+
+	"api": {
+		"error": {
+			"internal": "Ein interner Fehler ist aufgetreten :(",
+
+			"resource": {
+				"notfound": "Ressource nicht gefunden"
+			},
+
+			"validation": {
+				"constraint": {
+					"violation": "Verstoß gegen eine Datenbankbedingung"
+				},
+
+				"recipe": {
+					"invalid": "Ungültiges Rezept"
+				},
+
+				"multipart": {
+					"unexpectedpart": "Unerwarteter multipart/form-data Teil"
+				}
+			}
+		}
 	}
 }

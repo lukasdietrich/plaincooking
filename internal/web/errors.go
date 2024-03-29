@@ -3,6 +3,7 @@ package web
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 	"log/slog"
 	"net/http"
 
@@ -12,6 +13,48 @@ import (
 
 	"github.com/lukasdietrich/plaincooking/internal/parser"
 )
+
+var (
+	ErrInternal = ApiError{
+		Status: http.StatusInternalServerError,
+		Code:   "internal",
+	}
+
+	ErrResourceNotFound = ApiError{
+		Status: http.StatusNotFound,
+		Code:   "resource.notfound",
+	}
+
+	ErrContraintViolation = ApiError{
+		Status: http.StatusConflict,
+		Code:   "validation.constraint.violation",
+	}
+
+	ErrRecipeInvalid = ApiError{
+		Status: http.StatusUnprocessableEntity,
+		Code:   "validation.recipe.invalid",
+	}
+
+	ErrMultipartUnexpectedPart = ApiError{
+		Status: http.StatusUnprocessableEntity,
+		Code:   "validation.multipart.unexpectedpart",
+	}
+)
+
+type ApiError struct {
+	Status   int    `json:"status"`
+	Code     string `json:"code"`
+	Internal error  `json:"-"`
+} // @name PlaincookingApiError
+
+func (e ApiError) Error() string {
+	return fmt.Sprintf("api error status=%d, code=%q: %v", e.Status, e.Code, e.Internal)
+}
+
+func (e ApiError) WithInternal(err error) ApiError {
+	e.Internal = err
+	return e
+}
 
 func marshalApiError() echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
@@ -46,7 +89,13 @@ func handleBusinessError() echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(ctx echo.Context) error {
 			if err := next(ctx); err != nil {
-				return mapBusinessError(err)
+				mapped := mapBusinessError(err)
+
+				if apiError, ok := mapped.(ApiError); ok {
+					return apiError.WithInternal(err)
+				}
+
+				return mapped
 			}
 
 			return nil
@@ -55,48 +104,24 @@ func handleBusinessError() echo.MiddlewareFunc {
 }
 
 func mapBusinessError(err error) error {
-	if errors.Is(err, xid.ErrInvalidID) {
-		return ApiError{
-			Status:   http.StatusBadRequest,
-			Code:     "invalid id",
-			Internal: err,
-		}
-	}
-
-	if errors.Is(err, sql.ErrNoRows) {
-		return ApiError{
-			Status:   http.StatusNotFound,
-			Code:     "resource not found",
-			Internal: err,
-		}
+	if errors.Is(err, sql.ErrNoRows) || errors.Is(err, xid.ErrInvalidID) {
+		return ErrResourceNotFound
 	}
 
 	if errors.Is(err, parser.ErrInvalidRecipe) {
-		return ApiError{
-			Status:   http.StatusUnprocessableEntity,
-			Code:     "invalid recipe",
-			Internal: err,
-		}
+		return ErrRecipeInvalid
 	}
 
 	if sqliteErr, ok := errorAs[sqlite3.Error](err); ok {
 		return mapSqliteError(sqliteErr)
 	}
 
-	return ApiError{
-		Status:   http.StatusInternalServerError,
-		Code:     "internal",
-		Internal: err,
-	}
+	return ErrInternal
 }
 
 func mapSqliteError(err sqlite3.Error) error {
 	if err.Code == sqlite3.ErrConstraint {
-		return ApiError{
-			Status:   http.StatusConflict,
-			Code:     "constraint violation",
-			Internal: err,
-		}
+		return ErrContraintViolation
 	}
 
 	return err

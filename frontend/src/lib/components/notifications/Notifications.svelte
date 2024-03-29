@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { fly } from 'svelte/transition';
+	import { t } from '$lib/i18n';
 	import { notifications } from './store';
 </script>
 
@@ -19,7 +20,7 @@
 				class:icon-triangle-alert={type === 'warn'}
 				class:icon-octagon-x={type === 'error'}
 			></i>
-			<span>{notification.text}</span>
+			<span>{$t(notification.text)}</span>
 		</div>
 	{/each}
 </div>

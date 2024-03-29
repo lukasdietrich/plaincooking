@@ -22,5 +22,29 @@
 		"modal": {
 			"delete": "Delete recipe?"
 		}
+	},
+
+	"api": {
+		"error": {
+			"internal": "An internal error occured :(",
+
+			"resource": {
+				"notfound": "Resource not found"
+			},
+
+			"validation": {
+				"constraint": {
+					"violation": "Violating database constraint"
+				},
+
+				"recipe": {
+					"invalid": "Invalid recipe"
+				},
+
+				"multipart": {
+					"unexpectedpart": "Unexpected multipart/form-data part"
+				}
+			}
+		}
 	}
 }

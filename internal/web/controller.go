@@ -16,16 +16,6 @@ const (
 	MediaTypeMarkdown = "text/markdown"
 )
 
-type ApiError struct {
-	Status   int    `json:"status"`
-	Code     string `json:"code"`
-	Internal error  `json:"-"`
-} // @name PlaincookingApiError
-
-func (e ApiError) Error() string {
-	return fmt.Sprintf("api error status=%d, code=%q: %v", e.Status, e.Code, e.Internal)
-}
-
 // @title     PlainCooking API
 // @version   0.1
 // @host      http://localhost:8080
@@ -270,10 +260,7 @@ func (c *RecipeController) findFormPart(ctx echo.Context, name string) (*multipa
 	}
 
 	if part.FormName() != name {
-		return nil, echo.NewHTTPError(
-			http.StatusUnprocessableEntity,
-			fmt.Sprintf("multipart part is not named %q", name),
-		)
+		return nil, ErrMultipartUnexpectedPart
 	}
 
 	return part, nil
