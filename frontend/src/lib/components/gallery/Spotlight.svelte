@@ -19,13 +19,20 @@
 </script>
 
 <div
-	class="absolute -top-3 -left-3 -right-3 shadow-xl shadow-black/15 rounded overflow-clip transition-300"
+	class="fixed inset-0 z-750 transition-300 bg-black/90 flex items-center justify-center"
 	class:opacity-0={hidden}
 >
-	<img src={image.href} alt={image.id} on:load={() => (loading = false)} />
+	<div class="w-full h-full p-15 rounded-10">
+		<img
+			src={image.href}
+			alt={image.id}
+			on:load={() => (loading = false)}
+			class="mx-auto h-full object-scale-down"
+		/>
+	</div>
 
-	<button class="absolute right-3 top-3 rounded text-white text-lg" on:click={handleClose}>
-		<i class="icon-x bg-black/30 backdrop-blur-10 p-2 rounded-full transition hover:bg-red-600/50"
+	<button class="absolute right-5 top-5 rounded text-white text-lg" on:click={handleClose}>
+		<i class="icon-x bg-white/30 backdrop-blur-10 p-2 rounded-full transition hover:bg-red-700/80"
 		></i>
 	</button>
 </div>

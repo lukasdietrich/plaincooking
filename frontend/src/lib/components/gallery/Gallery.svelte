@@ -20,7 +20,7 @@
 	}
 </script>
 
-<div class="relative h-36 sm:h-48 md:h-72">
+<div class="h-36 sm:h-48 md:h-72">
 	<Carousel
 		images={imagesWithNew}
 		on:spotlight={(event) => (spotlight = event.detail)}
