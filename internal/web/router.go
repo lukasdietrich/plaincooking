@@ -1,7 +1,9 @@
 package web
 
 import (
+	"log/slog"
 	"net/http"
+	"sort"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -42,5 +44,22 @@ func NewRouter(
 
 	api.GET("/assets/:assetId", assets.Download)
 
+	logRoutes(r)
 	return r
+}
+
+func logRoutes(r *echo.Echo) {
+	routes := r.Routes()
+
+	sort.Slice(routes, func(i, j int) bool {
+		if routes[i].Path == routes[j].Path {
+			return routes[i].Method < routes[j].Method
+		}
+
+		return routes[i].Path <= routes[j].Path
+	})
+
+	for _, route := range routes {
+		slog.Debug("registered route", slog.String("method", route.Method), slog.String("path", route.Path))
+	}
 }

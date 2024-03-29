@@ -5,6 +5,7 @@ import (
 	"embed"
 	"errors"
 	"fmt"
+	"log/slog"
 
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/sqlite3"
@@ -39,9 +40,23 @@ func migrateUp(db *sql.DB) error {
 		return fmt.Errorf("could not create migrator: %w", err)
 	}
 
+	migrator.Log = migratorLogger{slog.Default()}
+
 	if err := migrator.Up(); err != nil && !errors.Is(err, migrate.ErrNoChange) {
 		return fmt.Errorf("could not apply migrations: %w", err)
 	}
 
 	return nil
+}
+
+type migratorLogger struct {
+	logger *slog.Logger
+}
+
+func (l migratorLogger) Printf(format string, v ...interface{}) {
+	l.logger.Debug(format, v...)
+}
+
+func (l migratorLogger) Verbose() bool {
+	return true
 }

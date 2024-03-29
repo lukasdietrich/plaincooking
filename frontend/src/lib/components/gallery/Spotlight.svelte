@@ -21,7 +21,7 @@
 
 {#await preload then image}
 	<button
-		class="fixed inset-0 z-750 bg-black/80 backdrop-blur-30 backdrop-grayscale-70"
+		class="fixed inset-0 w-full h-full z-750 bg-black/80 backdrop-blur-30 backdrop-grayscale-70"
 		on:click={handleClose}
 		transition:scale|global={{ start: 1.05, duration: 300 }}
 	>

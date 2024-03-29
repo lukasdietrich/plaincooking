@@ -10,6 +10,7 @@ import (
 	"image/jpeg"
 	"image/png"
 	"io"
+	"log/slog"
 	"time"
 
 	"github.com/muesli/smartcrop"
@@ -67,6 +68,7 @@ func (s *AssetService) Writer(ctx context.Context, filename, mediaTyp string) (*
 		buffer:  make([]byte, viper.GetSizeInBytes("asset.chunk.size")),
 	}
 
+	slog.Info("writing asset", slog.Any("id", asset.ID))
 	return &w, nil
 }
 
@@ -84,6 +86,7 @@ func (s *AssetService) Reader(ctx context.Context, id xid.ID) (*AssetReader, err
 		querier:      querier,
 	}
 
+	slog.Debug("reading asset", slog.Any("id", asset.ID))
 	return &r, nil
 }
 
@@ -133,6 +136,8 @@ func (w *AssetWriter) flushChunk(always bool) error {
 		Content: w.buffer[:w.n],
 	}
 
+	slog.Debug("writing asset chunk", slog.Any("id", createAssetChunkParams.ID))
+
 	if err := w.querier.CreateAssetChunk(w.ctx, createAssetChunkParams); err != nil {
 		return err
 	}
@@ -180,6 +185,8 @@ func (r *AssetReader) advanceChunk() error {
 
 		return err
 	}
+
+	slog.Debug("reading asset chunk", slog.Any("id", chunk.ID))
 
 	r.offset = chunk.ID
 	r.buffer = chunk.Content
@@ -257,6 +264,8 @@ func (s *AssetService) ThumbnailReader(ctx context.Context, id xid.ID, size Thum
 }
 
 func (s *AssetService) persistThumbnail(ctx context.Context, id xid.ID, size ThumbnailSize) (xid.ID, error) {
+	slog.Info("generating thumbnail for asset", slog.Any("id", id), slog.Any("size", size))
+
 	img, err := s.generateThumbnail(ctx, id, size)
 	if err != nil {
 		return xid.NilID(), err

@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"log/slog"
 	"time"
 
 	"github.com/rs/xid"
@@ -45,6 +46,8 @@ func (s *RecipeService) Read(ctx context.Context, id xid.ID) ([]byte, error) {
 }
 
 func (s *RecipeService) Create(ctx context.Context, content []byte) (xid.ID, error) {
+	slog.Debug("creating recipe")
+
 	querier := s.transactions.Querier(ctx)
 
 	meta, err := s.parser.ParseRecipe(content)
@@ -71,10 +74,13 @@ func (s *RecipeService) Create(ctx context.Context, content []byte) (xid.ID, err
 		return xid.NilID(), err
 	}
 
+	slog.Info("created recipe", slog.Any("id", createRecipeParams.ID))
 	return createRecipeParams.ID, nil
 }
 
 func (s *RecipeService) Update(ctx context.Context, id xid.ID, content []byte) error {
+	slog.Debug("updating recipe", slog.Any("id", id))
+
 	querier := s.transactions.Querier(ctx)
 
 	meta, err := s.parser.ParseRecipe(content)
@@ -101,10 +107,13 @@ func (s *RecipeService) Update(ctx context.Context, id xid.ID, content []byte) e
 		return err
 	}
 
+	slog.Info("updated recipe", slog.Any("id", id))
 	return nil
 }
 
 func (s *RecipeService) Delete(ctx context.Context, id xid.ID) error {
+	slog.Info("deleting recipe", slog.Any("id", id))
+
 	querier := s.transactions.Querier(ctx)
 	_, err := querier.DeleteRecipe(ctx, models.DeleteRecipeParams{ID: id})
 	return err

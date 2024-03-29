@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"database/sql"
+	"log/slog"
 
 	"github.com/lukasdietrich/plaincooking/internal/database/models"
 )
@@ -20,6 +21,8 @@ func NewTransactionService(db *sql.DB) *TransactionService {
 }
 
 func (s *TransactionService) Transactional(ctx context.Context, fn func(context.Context) error) error {
+	slog.Debug("beginning database transaction")
+
 	tx, err := s.db.BeginTx(ctx, nil)
 	if err != nil {
 		return err
@@ -28,10 +31,13 @@ func (s *TransactionService) Transactional(ctx context.Context, fn func(context.
 	ctx = context.WithValue(ctx, txContextKey{}, tx)
 
 	if err := fn(ctx); err != nil {
+		slog.Debug("rolling back database transaction")
+
 		tx.Rollback() // nolint:errcheck
 		return err
 	}
 
+	slog.Debug("committing database transaction")
 	return tx.Commit()
 }
 

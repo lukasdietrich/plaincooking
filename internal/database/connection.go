@@ -3,6 +3,7 @@ package database
 import (
 	"database/sql"
 	"fmt"
+	"log/slog"
 	"net/url"
 
 	"github.com/spf13/viper"
@@ -17,6 +18,7 @@ func init() {
 
 func Open() (*sql.DB, error) {
 	dsn := buildDataSourceName()
+	slog.Debug("opening database connection", slog.String("dsn", dsn))
 
 	db, err := sql.Open("sqlite3", dsn)
 	if err != nil {
