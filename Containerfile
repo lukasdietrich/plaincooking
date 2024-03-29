@@ -2,7 +2,7 @@ from docker.io/library/golang:alpine as generate-openapi-spec
 	workdir /build
 
 	copy Makefile .swaggo go.* .
-	copy internal/web/controller.go ./internal/web/controller.go
+	copy internal/web ./internal/web
 
 	run apk --no-cache add make gcc musl-dev
 	run make target/swagger.json
