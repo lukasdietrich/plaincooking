@@ -21,12 +21,16 @@
 
 {#await preload then image}
 	<button
-		class="fixed inset-0 z-750 bg-black/90 flex items-center justify-center"
+		class="fixed inset-0 z-750 bg-black/80 backdrop-blur-30 backdrop-grayscale-70"
 		on:click={handleClose}
-		transition:scale={{ start: 1.05, duration: 200, delay: 150 }}
+		transition:scale|global={{ start: 1.05, duration: 300 }}
 	>
-		<div class="w-full h-full p-15 rounded-10">
-			<img src={image.src} alt={image.alt} class="mx-auto h-full object-scale-down" />
+		<div class="flex w-full h-full p-3 md:p-5 lg:p-15">
+			<img
+				src={image.src}
+				alt={image.alt}
+				class="m-auto h-auto max-h-full object-scale-down rounded-lg"
+			/>
 		</div>
 	</button>
 {/await}
