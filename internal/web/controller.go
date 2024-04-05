@@ -9,6 +9,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/rs/xid"
 
+	"github.com/lukasdietrich/plaincooking/internal/oidc"
 	"github.com/lukasdietrich/plaincooking/internal/service"
 )
 
@@ -20,6 +21,40 @@ const (
 // @version   0.1
 // @host      http://localhost:8080
 // @basePath  /api
+
+type SessionController struct {
+	session *oidc.Session
+}
+
+func NewSessionController(session *oidc.Session) *SessionController {
+	return &SessionController{
+		session: session,
+	}
+}
+
+type UserInfoResponse struct {
+	Subject    string `json:"subject"`
+	Email      string `json:"email"`
+	Username   string `json:"username"`
+	Name       string `json:"name"`
+	PictureUrl string `json:"pictureUrl"`
+} // @name UserInfo
+
+// @summary  Get user info
+// @id       userInfo
+// @tags     session
+// @router   /session/info  [get]
+// @produce  application/json
+// @success  200  {object}  UserInfoResponse
+// @success  401  {object}  ApiError
+func (c *SessionController) UserInfo(ctx echo.Context) error {
+	claims, err := c.session.Claims(ctx)
+	if err != nil {
+		return err
+	}
+
+	return ctx.JSON(http.StatusOK, mapUserInfo(claims))
+}
 
 type RecipeController struct {
 	recipes *service.RecipeService

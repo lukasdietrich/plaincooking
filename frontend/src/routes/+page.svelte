@@ -17,7 +17,7 @@
 </script>
 
 <ActionPortal>
-	<Action href={'/recipes/new'} title={$t('actions.recipe.new')}>
+	<Action href={'/recipes/new'} title={$t('actions.recipe.new')} requireAuth={true}>
 		<i class="icon-plus"></i>
 	</Action>
 </ActionPortal>

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log/slog"
 	"os"
+	"sort"
 	"strings"
 
 	"github.com/spf13/viper"
@@ -16,6 +17,7 @@ func init() {
 func main() {
 	setupConfig()
 	setupLogger()
+	printConfig()
 
 	if err := run(); err != nil {
 		slog.Error("Fatal", slog.Any("error", err))
@@ -50,6 +52,16 @@ func setupLogger() {
 	}
 
 	slog.Debug("set logging level", slog.Any("level", level))
+}
+
+func printConfig() {
+	keys := viper.AllKeys()
+	sort.Strings(keys)
+
+	for _, key := range keys {
+		value := viper.Get(key)
+		slog.Debug("config", slog.Any(key, value))
+	}
 }
 
 func run() error {

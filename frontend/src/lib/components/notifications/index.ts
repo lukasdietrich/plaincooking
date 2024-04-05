@@ -8,7 +8,7 @@ export { default as Notifications } from './Notifications.svelte';
 registerMiddleware({
 	async onResponse(res: Response) {
 		if (res.status >= 300) {
-			const error = <components['schemas']['PlaincookingApiError']>await res.clone().json();
+			const error = <components['schemas']['ApiError']>await res.clone().json();
 
 			notify({
 				type: 'error',

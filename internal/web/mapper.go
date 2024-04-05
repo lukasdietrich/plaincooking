@@ -6,6 +6,7 @@ import (
 	"github.com/rs/xid"
 
 	"github.com/lukasdietrich/plaincooking/internal/database/models"
+	"github.com/lukasdietrich/plaincooking/internal/oidc"
 )
 
 func mapSlice[Src, Dst any](sourceSlice []Src, fn func(Src) Dst) []Dst {
@@ -19,6 +20,16 @@ func mapSlice[Src, Dst any](sourceSlice []Src, fn func(Src) Dst) []Dst {
 	}
 
 	return destinationSlice
+}
+
+func mapUserInfo(claims *oidc.Claims) UserInfoResponse {
+	return UserInfoResponse{
+		Subject:    claims.Subject,
+		Email:      claims.Email,
+		Username:   claims.PreferredUsername,
+		Name:       claims.Name,
+		PictureUrl: claims.Picture,
+	}
 }
 
 func mapRecipeMetadataDto(entity models.ListRecipeMetadataRow) RecipeMetadataDto {

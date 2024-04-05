@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { components } from '$lib/api';
 	import { createEventDispatcher } from 'svelte';
+	import { user } from '$lib/auth';
 	import { dragOnBody, dropOnBody } from '$lib/actions/drag';
 
 	export let images: components['schemas']['AssetMetadata'][] = [];
@@ -46,18 +47,20 @@
 				<i class="icon-image-up text-3xl text-slate-700/70"></i>
 			</label>
 
-			<input
-				id="image-upload"
-				type="file"
-				class="hidden"
-				accept="image/png, image/jpeg"
-				on:change={handleFileChange}
-				on:dragEnterBody={() => (current = -1)}
-				on:dragLeaveBody={() => (current = getInitialCurrent(images))}
-				on:dropBody={handleFileDrop}
-				use:dragOnBody
-				use:dropOnBody
-			/>
+			{#if $user}
+				<input
+					id="image-upload"
+					type="file"
+					class="hidden"
+					accept="image/png, image/jpeg"
+					on:change={handleFileChange}
+					on:dragEnterBody={() => (current = -1)}
+					on:dragLeaveBody={() => (current = getInitialCurrent(images))}
+					on:dropBody={handleFileDrop}
+					use:dragOnBody
+					use:dropOnBody
+				/>
+			{/if}
 
 			{#if images.length > 0}
 				<button class="right-0 rounded-r arrow" on:click={() => (current = 0)}>
@@ -76,9 +79,11 @@
 					on:click={() => handleSpotlight(image)}
 				/>
 
-				<button class="left-0 rounded-l arrow" on:click={() => (current = index - 1)}>
-					<i class:icon-arrow-left={index > 0} class:icon-image-up={index === 0}></i>
-				</button>
+				{#if index > 0 || $user}
+					<button class="left-0 rounded-l arrow" on:click={() => (current = index - 1)}>
+						<i class:icon-arrow-left={index > 0} class:icon-image-up={index === 0}></i>
+					</button>
+				{/if}
 
 				{#if index < images.length - 1}
 					<button class="right-0 rounded-r arrow" on:click={() => (current = index + 1)}>
