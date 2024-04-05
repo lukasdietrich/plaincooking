@@ -54,11 +54,11 @@ func NewRouter(
 
 	api.GET("/assets/:assetId", assets.Download)
 
-	logRoutes(r)
+	printRoutes(r)
 	return r
 }
 
-func logRoutes(r *echo.Echo) {
+func printRoutes(r *echo.Echo) {
 	routes := r.Routes()
 
 	sort.Slice(routes, func(i, j int) bool {
@@ -70,6 +70,8 @@ func logRoutes(r *echo.Echo) {
 	})
 
 	for _, route := range routes {
-		slog.Debug("registered route", slog.String("method", route.Method), slog.String("path", route.Path))
+		slog.Debug("route",
+			slog.String("method", route.Method),
+			slog.String("path", route.Path))
 	}
 }
