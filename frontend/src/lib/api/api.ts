@@ -11,13 +11,19 @@ const options: ClientOptions = {
 	bodySerializer: jsonSerializer
 };
 
-export function createApi(fetch?: typeof globalThis.fetch) {
+export function createApi(fetch?: typeof globalThis.fetch, skipMiddleware?: boolean) {
 	const client = createClient<paths>({ ...options, fetch });
-	client.use(...middleware());
+	if (skipMiddleware !== true) {
+		client.use(...middleware());
+	}
 
 	const { GET, POST, PUT, DELETE } = client;
 
 	return {
+		readUserInfo() {
+			return handleResponse(GET('/session/info'));
+		},
+
 		listRecipes() {
 			return handleResponse(GET('/recipes'));
 		},

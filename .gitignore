@@ -2,3 +2,4 @@ target/
 *_gen.go
 *.sqlite
 *.sqlite-*
+.env

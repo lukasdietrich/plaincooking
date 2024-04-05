@@ -23,7 +23,7 @@
 		<i class="icon-undo-2"></i>
 	</Action>
 
-	<Action on:click={save} title={$t('actions.save')}>
+	<Action on:click={save} title={$t('actions.save')} requireAuth={true}>
 		<i class="icon-save"></i>
 	</Action>
 </ActionPortal>

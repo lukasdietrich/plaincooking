@@ -51,7 +51,7 @@ type ApiError struct {
 	Status   int    `json:"status"`
 	Code     string `json:"code"`
 	Internal error  `json:"-"`
-} // @name PlaincookingApiError
+} // @name ApiError
 
 func (e ApiError) Error() string {
 	return fmt.Sprintf("api error status=%d, code=%q: %v", e.Status, e.Code, e.Internal)

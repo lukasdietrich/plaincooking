@@ -15,7 +15,11 @@
 </script>
 
 <ActionPortal>
-	<Action href={resolveRoute('/recipes/[recipeId]/edit', $page)} title={$t('actions.recipe.edit')}>
+	<Action
+		href={resolveRoute('/recipes/[recipeId]/edit', $page)}
+		title={$t('actions.recipe.edit')}
+		requireAuth={true}
+	>
 		<i class="icon-file-pen-line"></i>
 	</Action>
 </ActionPortal>

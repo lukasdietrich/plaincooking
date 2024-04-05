@@ -42,11 +42,11 @@
 		<i class="icon-undo-2"></i>
 	</Action>
 
-	<Action on:click={handleDelete} title={$t('actions.recipe.delete')}>
+	<Action on:click={handleDelete} title={$t('actions.recipe.delete')} requireAuth={true}>
 		<i class="icon-trash"></i>
 	</Action>
 
-	<Action on:click={handleUpdate} title={$t('actions.save')}>
+	<Action on:click={handleUpdate} title={$t('actions.save')} requireAuth={true}>
 		<i class="icon-save"></i>
 	</Action>
 </ActionPortal>

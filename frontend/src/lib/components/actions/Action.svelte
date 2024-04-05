@@ -1,21 +1,28 @@
 <script lang="ts">
+	import { user } from '$lib/auth';
+
 	export let href: string | null = null;
 	export let title: string | null = null;
+	export let requireAuth: boolean = false;
+
+	$: show = !requireAuth || Boolean($user);
 </script>
 
-{#if href}
-	<a {href} {title} on:click>
-		<slot />
-	</a>
-{:else}
-	<button {title} on:click>
-		<slot />
-	</button>
+{#if show}
+	{#if href}
+		<a {href} {title} on:click>
+			<slot />
+		</a>
+	{:else}
+		<button {title} on:click>
+			<slot />
+		</button>
+	{/if}
 {/if}
 
 <style>
 	a,
 	button {
-		--at-apply: 'flex h-full px-5 items-center ring-emerald-900 transition hover:(bg-emerald-100 text-emerald-900 ring-2 z-2)';
+		--at-apply: 'flex h-full px-5 items-center bg-emerald-700 text-xl ring-emerald-900 transition hover:(bg-emerald-100 text-emerald-900 ring-2 z-2)';
 	}
 </style>

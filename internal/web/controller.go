@@ -38,7 +38,7 @@ type UserInfoResponse struct {
 	Username   string `json:"username"`
 	Name       string `json:"name"`
 	PictureUrl string `json:"pictureUrl"`
-}
+} // @name UserInfo
 
 // @summary  Get user info
 // @id       userInfo
