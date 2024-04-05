@@ -9,13 +9,17 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 
 	"github.com/lukasdietrich/plaincooking/frontend"
+	"github.com/lukasdietrich/plaincooking/internal/oidc"
 	"github.com/lukasdietrich/plaincooking/internal/service"
 )
 
 func NewRouter(
 	transactions *service.TransactionService,
-	recipes *RecipeController,
+	oidcHandler *oidc.Handler,
+	oidcSession *oidc.Session,
+	sessions *SessionController,
 	assets *AssetController,
+	recipes *RecipeController,
 ) http.Handler {
 	r := echo.New()
 	r.Binder = new(binder)
@@ -31,16 +35,22 @@ func NewRouter(
 		Filesystem: http.FS(frontend.Files()),
 	}))
 
+	oauth2 := r.Group("/oauth2")
+	oauth2.GET("/redirect", oidcHandler.Redirect)
+	oauth2.GET("/callback", oidcHandler.Callback)
+
 	api := r.Group("/api")
 	api.Use(transactional(transactions))
 
+	api.GET("/session/info", sessions.UserInfo, oidcSession.Require)
+
 	api.GET("/recipes", recipes.List)
-	api.POST("/recipes", recipes.Create)
+	api.POST("/recipes", recipes.Create, oidcSession.Require)
 	api.GET("/recipes/:recipeId", recipes.Read)
-	api.PUT("/recipes/:recipeId", recipes.Update)
-	api.DELETE("/recipes/:recipeId", recipes.Delete)
+	api.PUT("/recipes/:recipeId", recipes.Update, oidcSession.Require)
+	api.DELETE("/recipes/:recipeId", recipes.Delete, oidcSession.Require)
 	api.GET("/recipes/:recipeId/images", recipes.ListImages)
-	api.POST("/recipes/:recipeId/images", recipes.UploadImage)
+	api.POST("/recipes/:recipeId/images", recipes.UploadImage, oidcSession.Require)
 
 	api.GET("/assets/:assetId", assets.Download)
 

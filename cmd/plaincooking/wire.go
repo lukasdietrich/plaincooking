@@ -8,6 +8,7 @@ import (
 	"github.com/google/wire"
 
 	"github.com/lukasdietrich/plaincooking/internal/database"
+	"github.com/lukasdietrich/plaincooking/internal/oidc"
 	"github.com/lukasdietrich/plaincooking/internal/parser"
 	"github.com/lukasdietrich/plaincooking/internal/service"
 	"github.com/lukasdietrich/plaincooking/internal/web"
@@ -20,6 +21,13 @@ func InjectServer() (*http.Server, error) {
 		web.NewRouter,
 		web.NewAssetController,
 		web.NewRecipeController,
+		web.NewSessionController,
+
+		// OpenID Connect
+		oidc.NewProvider,
+		oidc.NewConfig,
+		oidc.NewHandler,
+		oidc.NewSession,
 
 		// Service
 		service.NewTransactionService,

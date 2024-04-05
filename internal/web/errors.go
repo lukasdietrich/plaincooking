@@ -11,6 +11,7 @@ import (
 	"github.com/mattn/go-sqlite3"
 	"github.com/rs/xid"
 
+	"github.com/lukasdietrich/plaincooking/internal/oidc"
 	"github.com/lukasdietrich/plaincooking/internal/parser"
 )
 
@@ -18,6 +19,11 @@ var (
 	ErrInternal = ApiError{
 		Status: http.StatusInternalServerError,
 		Code:   "internal",
+	}
+
+	ErrUnauthorized = ApiError{
+		Status: http.StatusUnauthorized,
+		Code:   "unauthorized",
 	}
 
 	ErrResourceNotFound = ApiError{
@@ -114,6 +120,10 @@ func mapBusinessError(err error) error {
 
 	if sqliteErr, ok := errorAs[sqlite3.Error](err); ok {
 		return mapSqliteError(sqliteErr)
+	}
+
+	if _, ok := errorAs[oidc.AuthorizationError](err); ok {
+		return ErrUnauthorized
 	}
 
 	return ErrInternal
