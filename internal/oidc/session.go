@@ -11,7 +11,12 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/labstack/echo/v4"
 	"github.com/rs/xid"
+	"github.com/spf13/viper"
 )
+
+func init() {
+	viper.SetDefault("oidc.session.lifetime", "2h")
+}
 
 const (
 	cookieName = "__PLAINCOOKING_TOKEN"
@@ -117,8 +122,9 @@ func (s *Session) claimsFromUserInfo(userInfo *oidc.UserInfo) (*Claims, error) {
 		return nil, err
 	}
 
+	lifetime := viper.GetDuration("oidc.session.lifetime")
 	issuedAt := time.Now()
-	expiresAt := issuedAt.Add(time.Hour * 2)
+	expiresAt := issuedAt.Add(lifetime)
 
 	claims.RegisteredClaims = jwt.RegisteredClaims{
 		ID:        xid.New().String(),
