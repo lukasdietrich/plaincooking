@@ -3,7 +3,7 @@
 </script>
 
 <Portal target="#actions">
-	<div class="inline-flex h-14">
+	<div class="inline-flex h-full">
 		<slot />
 	</div>
 </Portal>
