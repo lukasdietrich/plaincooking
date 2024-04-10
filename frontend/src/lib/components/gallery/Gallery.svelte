@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { components } from '$lib/api';
 	import { createApi } from '$lib/api';
+	import { user } from '$lib/auth';
 	import Carousel from './Carousel.svelte';
 	import Spotlight from './Spotlight.svelte';
 
@@ -20,14 +21,16 @@
 	}
 </script>
 
-<div class="h-36 sm:h-48 md:h-72">
-	<Carousel
-		images={imagesWithNew}
-		on:spotlight={(event) => (spotlight = event.detail)}
-		on:upload={(event) => handleUpload(event.detail)}
-	/>
+{#if imagesWithNew.length > 0 || $user}
+	<div class="h-36 sm:h-48 md:h-72">
+		<Carousel
+			images={imagesWithNew}
+			on:spotlight={(event) => (spotlight = event.detail)}
+			on:upload={(event) => handleUpload(event.detail)}
+		/>
 
-	{#if spotlight}
-		<Spotlight image={spotlight} on:close={() => (spotlight = null)} />
-	{/if}
-</div>
+		{#if spotlight}
+			<Spotlight image={spotlight} on:close={() => (spotlight = null)} />
+		{/if}
+	</div>
+{/if}
