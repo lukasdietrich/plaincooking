@@ -21,7 +21,7 @@ GEN.FRONTEND        = frontend/build
 # Tools
 GO                 = go
 MIGRATE            = $(GO) run github.com/golang-migrate/migrate/v4/cmd/migrate@v4.17.0
-SQLC               = $(GO) run github.com/sqlc-dev/sqlc/cmd/sqlc@v1.25.0
+SQLC               = $(GO) run github.com/sqlc-dev/sqlc/cmd/sqlc@v1.26.0
 SWAG               = $(GO) run github.com/swaggo/swag/cmd/swag@v1.16.3
 WIRE               = $(GO) run github.com/google/wire/cmd/wire@v0.6.0
 NPM                = npm --prefix frontend
