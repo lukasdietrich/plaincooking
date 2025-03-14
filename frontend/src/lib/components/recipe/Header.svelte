@@ -55,8 +55,8 @@
 	<TokenRenderer token={recipe.intro} />
 </header>
 
-<style>
+<style lang="css">
 	.badges > div {
-		--at-apply: mb-2 mr-2;
+		--at-apply: 'mb-2 mr-2'; /**/
 	}
 </style>

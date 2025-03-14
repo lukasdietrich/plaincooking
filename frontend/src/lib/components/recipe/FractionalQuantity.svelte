@@ -4,7 +4,7 @@
 	export let quantity: Fraction;
 	export let unit: string | undefined;
 
-	$: wholeNumbers = Math.floor(quantity.n / quantity.d);
+	$: wholeNumbers = quantity.n / quantity.d;
 	$: numerator = quantity.n % quantity.d;
 	$: denominator = quantity.d;
 </script>
@@ -15,7 +15,7 @@
 	</span>
 {/if}
 
-{#if numerator !== 0}
+{#if numerator !== 0n}
 	<span class="relative text-sm">
 		<span class="relative -top-1">{numerator}</span>
 		<span class="-mx-0.75">/</span>

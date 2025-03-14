@@ -46,8 +46,8 @@
 	</div>
 </dialog>
 
-<style>
+<style lang="css">
 	dialog::backdrop {
-		--at-apply: bg-black/40;
+		--at-apply: bg-black/40; /**/
 	}
 </style>

@@ -1,4 +1,5 @@
 import type { paths } from './types.gen';
+import type { MediaType } from 'openapi-typescript-helpers';
 import type { ClientOptions, FetchResponse, BodySerializer } from 'openapi-fetch';
 import createClient from 'openapi-fetch';
 import { middleware } from './middleware';
@@ -116,7 +117,11 @@ export function createApi(fetch?: typeof globalThis.fetch, skipMiddleware?: bool
 	};
 }
 
-async function handleResponse<T, O>(responsePromise: Promise<FetchResponse<T, O>>) {
+async function handleResponse<
+	T extends Record<string | number, any>,
+	Options,
+	Media extends MediaType
+>(responsePromise: Promise<FetchResponse<T, Options, Media>>) {
 	const { error, data } = await responsePromise;
 
 	if (error) {

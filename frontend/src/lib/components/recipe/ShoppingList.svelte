@@ -12,7 +12,7 @@
 			.map(explodeToken)
 			.flat()
 			.filter(({ type }) => type === 'ingredient')
-			.map((token) => <Tokens.Ingredient>token)
+			.map((token) => token as Tokens.Ingredient)
 			.toSorted(compareIngredients);
 	}
 

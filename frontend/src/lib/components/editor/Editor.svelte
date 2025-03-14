@@ -25,30 +25,30 @@
 	});
 </script>
 
-<div class="editor bg-gray-50 font-mono text-lg" bind:this={element} />
+<div class="editor bg-gray-50 font-mono text-lg" bind:this={element}></div>
 
-<style>
+<style class="css">
 	.editor :global(.cm-heading-1 *) {
-		--at-apply: text-2xl thickness-1 underline-offset-4;
+		--at-apply: text-2xl thickness-1 underline-offset-4; /**/
 	}
 
 	.editor :global(.cm-frontmatter-fence *) {
-		--at-apply: text-gray-900/40 font-semibold;
+		--at-apply: text-gray-900/40 font-semibold; /**/
 	}
 
 	.editor :global(.cm-hr) {
-		--at-apply: bg-blue-100;
+		--at-apply: bg-blue-100; /**/
 	}
 
 	.editor :global(.cm-hr *) {
-		--at-apply: text-blue-900/40 font-semibold;
+		--at-apply: text-blue-900/40 font-semibold; /**/
 	}
 
 	.editor :global(.cm-ingredient) {
-		--at-apply: bg-emerald-100 font-semibold not-italic;
+		--at-apply: bg-emerald-100 font-semibold not-italic; /**/
 	}
 
 	.editor :global(.cm-codemark *) {
-		--at-apply: text-emerald-900/40;
+		--at-apply: text-emerald-900/40; /**/
 	}
 </style>

@@ -24,7 +24,7 @@
 	}
 
 	function handleFileChange({ target }: Event) {
-		const input = <HTMLInputElement>target;
+		const input = target as HTMLInputElement;
 		const file = input.files?.item(0);
 
 		if (file) {
@@ -77,7 +77,7 @@
 					class:filter-blur-2={index !== current}
 					style:background-image="url({image.href}?thumbnail=banner)"
 					on:click={() => handleSpotlight(image)}
-				/>
+				></button>
 
 				{#if index > 0 || $user}
 					<button class="left-0 rounded-l arrow" on:click={() => (current = index - 1)}>
@@ -95,12 +95,12 @@
 	</div>
 </div>
 
-<style>
+<style lang="css">
 	.arrow {
-		--at-apply: 'absolute top-0 bottom-0 p-3 transition hover:(backdrop-blur-5 bg-black/10)';
+		--at-apply: 'absolute top-0 bottom-0 p-3 transition hover:(backdrop-blur-5 bg-black/10)'; /**/
 	}
 
 	.arrow i {
-		--at-apply: 'bg-black/30 backdrop-blur-10 p-2 rounded-full';
+		--at-apply: 'bg-black/30 backdrop-blur-10 p-2 rounded-full'; /**/
 	}
 </style>

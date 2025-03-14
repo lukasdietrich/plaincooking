@@ -25,16 +25,16 @@
 	{/each}
 </div>
 
-<style>
+<style lang="css">
 	.info {
-		--at-apply: bg-blue-600 text-blue-50 border-blue-800;
+		--at-apply: 'bg-blue-600 text-blue-50 border-blue-800'; /**/
 	}
 
 	.warn {
-		--at-apply: bg-yellow-600 text-yellow-50 border-yellow-800;
+		--at-apply: 'bg-yellow-600 text-yellow-50 border-yellow-800'; /**/
 	}
 
 	.error {
-		--at-apply: bg-red-600 text-red-50 border-red-800;
+		--at-apply: 'bg-red-600 text-red-50 border-red-800'; /**/
 	}
 </style>
