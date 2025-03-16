@@ -69,7 +69,7 @@
 			{/if}
 		</div>
 
-		{#each images as image, index}
+		{#each images as image, index (image.id)}
 			<div class="absolute w-full h-full rounded overflow-clip" style:left="{index * 101}%">
 				<button
 					class="block w-full h-full bg-cover bg-center transition-2000"

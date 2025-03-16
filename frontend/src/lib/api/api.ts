@@ -117,6 +117,7 @@ export function createApi(fetch?: typeof globalThis.fetch, skipMiddleware?: bool
 	};
 }
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
 async function handleResponse<
 	T extends Record<string | number, any>,
 	Options,

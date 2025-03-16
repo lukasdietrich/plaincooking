@@ -1,13 +1,11 @@
 <script lang="ts" generics="T">
 	import { getClose } from './context';
 
-	// eslint-disable-next-line no-undef
 	let result: T;
 	let cssClasses: string = '';
 
 	export { cssClasses as class, result };
 
-	// eslint-disable-next-line no-undef
 	const close = getClose<T>();
 </script>
 

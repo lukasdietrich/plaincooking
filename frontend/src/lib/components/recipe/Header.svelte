@@ -44,7 +44,7 @@
 			</div>
 		{/if}
 
-		{#each metadata.tags as tag}
+		{#each metadata.tags as tag, index (index)}
 			<div class="flex items-center space-x-1 rounded-full bg-blue-200 text-blue-900 px-3 py-1">
 				<i class="icon-hash"></i>
 				<span>{tag}</span>

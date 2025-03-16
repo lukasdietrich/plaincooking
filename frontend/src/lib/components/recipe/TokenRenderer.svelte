@@ -6,7 +6,7 @@
 </script>
 
 {#if Array.isArray(token)}
-	{#each token as token}
+	{#each token as token, index (index)}
 		<svelte:self {token} />
 	{/each}
 {:else if token.type === 'em'}

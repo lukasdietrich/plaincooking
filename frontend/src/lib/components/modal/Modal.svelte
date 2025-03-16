@@ -2,10 +2,8 @@
 	import { setClose } from './context';
 
 	let dialog: HTMLDialogElement;
-	// eslint-disable-next-line no-undef
 	let resolve: ((value: T | undefined) => void) | undefined;
 
-	// eslint-disable-next-line no-undef
 	export const show = async (): Promise<T | undefined> => {
 		dialog.showModal();
 
@@ -16,7 +14,6 @@
 		return new Promise((_resolve) => (resolve = _resolve));
 	};
 
-	// eslint-disable-next-line no-undef
 	const close = (value?: T) => {
 		dialog.close();
 
@@ -26,7 +23,6 @@
 		}
 	};
 
-	// eslint-disable-next-line no-undef
 	setClose<T>(close);
 </script>
 

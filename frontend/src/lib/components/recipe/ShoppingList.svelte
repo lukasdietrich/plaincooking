@@ -31,7 +31,7 @@
 
 <table class="font-serif text-lg">
 	<tbody>
-		{#each ingredients as token}
+		{#each ingredients as token, index (index)}
 			<tr class="odd:bg-slate-50">
 				<td colspan={token.quantity ? undefined : 2} class="px-3 py-2">
 					{token.ingredient}

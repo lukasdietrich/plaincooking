@@ -17,13 +17,13 @@
 </script>
 
 <ActionPortal>
-	<Action href={'/recipes/new'} title={$t('actions.recipe.new')} requireAuth={true}>
+	<Action href="/recipes/new" title={$t('actions.recipe.new')} requireAuth={true}>
 		<i class="icon-plus"></i>
 	</Action>
 </ActionPortal>
 
 <ul class="grid md:grid-cols-2 lg:grid-cols-3 gap-5 group">
-	{#each data.recipes as recipe}
+	{#each data.recipes as recipe (recipe.id)}
 		<li
 			class="rounded shadow overflow-clip bg-center bg-cover transition group-hover:opacity-80 hover:(!opacity-100 ring-2 ring-emerald-800)"
 			style:background-image="url({getImageUrl(recipe)})"

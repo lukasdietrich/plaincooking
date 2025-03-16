@@ -17,6 +17,6 @@
 	</Action>
 </ActionPortal>
 
-{#each data.recipe.steps as tokens, index}
+{#each data.recipe.steps as tokens, index (index)}
 	<Step {index} {tokens} />
 {/each}
