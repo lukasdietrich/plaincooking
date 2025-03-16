@@ -1,6 +1,7 @@
 package parser
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
 
@@ -58,7 +59,7 @@ func (p *RecipeParser) ParseRecipe(content []byte) (*RecipeMetadata, error) {
 func (p *RecipeParser) findTitle(recipe *RecipeMetadata, content []byte, node ast.Node) error {
 	err := ast.Walk(node, func(n ast.Node, _ bool) (ast.WalkStatus, error) {
 		if heading, ok := n.(*ast.Heading); ok && heading.Level == 1 {
-			recipe.Title = string(n.Text(content))
+			recipe.Title = string(textFromNode(heading, content))
 			return ast.WalkStop, nil
 		}
 
@@ -78,4 +79,18 @@ func (p *RecipeParser) findTitle(recipe *RecipeMetadata, content []byte, node as
 	}
 
 	return nil
+}
+
+func textFromNode(n ast.Node, content []byte) []byte {
+	if text, ok := n.(*ast.Text); ok {
+		return text.Segment.Value(content)
+	}
+
+	var b bytes.Buffer
+
+	for c := n.FirstChild(); c != nil; c = c.NextSibling() {
+		b.Write(textFromNode(c, content))
+	}
+
+	return b.Bytes()
 }
