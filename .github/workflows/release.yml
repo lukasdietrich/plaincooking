@@ -52,10 +52,6 @@ jobs:
         with:
           fetch-depth: 1
 
-      - name: Replace git-tag in Chart.yaml
-        run: |
-          sed -i "s/git-tag/${{ github.ref_name }}/g" helm/plaincooking-helm/Chart.yaml
-
       - name: Login to ghcr.io
         uses: docker/login-action@v3
         with:
@@ -65,5 +61,5 @@ jobs:
 
       - name: Push chart
         run: |
-          helm package helm/plaincooking-helm
+          helm package helm/plaincooking-helm --version ${{ github.ref_name }} --app-version ${{ github.ref_name }}
           helm push "plaincooking-helm-${{ github.ref_name }}.tgz" "oci://ghcr.io/${{ github.actor }}/plaincooking"
