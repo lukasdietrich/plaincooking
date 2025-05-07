@@ -22,6 +22,7 @@ func InjectServer() (*http.Server, error) {
 		web.NewAssetController,
 		web.NewRecipeController,
 		web.NewSessionController,
+		web.NewProbeController,
 
 		// OpenID Connect
 		oidc.NewProvider,

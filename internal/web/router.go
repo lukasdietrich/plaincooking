@@ -20,6 +20,7 @@ func NewRouter(
 	sessions *SessionController,
 	assets *AssetController,
 	recipes *RecipeController,
+	probes *ProbeController,
 ) http.Handler {
 	r := echo.New()
 	r.Binder = new(binder)
@@ -42,6 +43,7 @@ func NewRouter(
 	api := r.Group("/api")
 	api.Use(transactional(transactions))
 
+	api.GET("/healthz", probes.Health)
 	api.GET("/session/info", sessions.UserInfo, oidcSession.Require)
 
 	api.GET("/recipes", recipes.List)

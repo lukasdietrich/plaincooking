@@ -350,3 +350,18 @@ func (c *AssetController) reader(ctx echo.Context, req DownloadAssetRequest) (*s
 
 	return c.assets.Reader(ctx.Request().Context(), req.ID)
 }
+
+type ProbeController struct{}
+
+func NewProbeController() *ProbeController {
+	return &ProbeController{}
+}
+
+// @summary  Check service health
+// @id       healthProbe
+// @tags     probes
+// @router   /healthz  [get]
+// @success  200
+func (c *ProbeController) Health(ctx echo.Context) error {
+	return ctx.NoContent(http.StatusOK)
+}
