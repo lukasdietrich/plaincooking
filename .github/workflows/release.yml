@@ -1,0 +1,69 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  container:
+    name: Publish container image
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout 
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Container Tags
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            ghcr.io/lukasdietrich/plaincooking/plaincooking
+          tags: |
+            type=edge
+            type=semver,pattern=v{{version}}
+            type=semver,pattern=v{{major}}
+            type=sha
+
+      - uses: redhat-actions/buildah-build@v2
+        id: build-image
+        with:
+          tags: ${{ steps.meta.outputs.tags }}
+          containerfiles: |
+            ./Containerfile
+
+      - uses: redhat-actions/push-to-registry@v2
+        with:
+          tags: ${{ steps.build-image.outputs.tags }}
+          registry: ghcr.io/${{ github.repository_owner }}
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+
+  helm:
+    name: Publish helm chart
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout 
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Replace git-tag in Chart.yaml
+        run: |
+          sed -i "s/git-tag/${{ github.ref_name }}/g" helm/plaincooking-helm/Chart.yaml
+
+      - name: Login to ghcr.io
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+
+      - name: Push chart
+        run: |
+          helm package helm/plaincooking-helm
+          helm push "plaincooking-helm-${{ github.ref_name }}.tgz" "oci://ghcr.io/${{ github.actor }}/plaincooking"

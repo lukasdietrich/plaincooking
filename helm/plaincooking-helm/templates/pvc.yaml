@@ -1,0 +1,12 @@
+{{- with .Values.persistence }}
+{{- if and .enabled (empty .existingClaimName) }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "plaincooking-helm.fullname" $ }}-pvc
+  labels:
+    {{- include "plaincooking-helm.fullname" $ | nindent 4 }}
+spec: {{ .claim | toYaml | nindent 2 }}
+{{- end }}
+{{- end }}
