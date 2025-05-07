@@ -7,7 +7,7 @@ toolchain go1.23.5
 require (
 	github.com/coreos/go-oidc/v3 v3.14.1
 	github.com/golang-jwt/jwt/v5 v5.2.1
-	github.com/golang-migrate/migrate/v4 v4.18.2
+	github.com/golang-migrate/migrate/v4 v4.18.3
 	github.com/google/wire v0.6.0
 	github.com/labstack/echo/v4 v4.13.3
 	github.com/mattn/go-sqlite3 v1.14.24
