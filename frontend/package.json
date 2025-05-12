@@ -47,7 +47,7 @@
 		"@fontsource-variable/inconsolata": "^5.2.5",
 		"@fontsource-variable/readex-pro": "^5.2.5",
 		"codemirror": "^6.0.1",
-		"fraction.js": "^5.2.1",
+		"fraction.js": "^5.2.2",
 		"lucide-static": "^0.482.0",
 		"marked": "^15.0.11",
 		"openapi-fetch": "^0.13.5",
