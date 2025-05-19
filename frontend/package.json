@@ -53,6 +53,6 @@
 		"openapi-fetch": "^0.13.5",
 		"svelte-i18n": "^4.0.1",
 		"svelte-portal": "^2.2.1",
-		"yaml": "^2.7.0"
+		"yaml": "^2.8.0"
 	}
 }
