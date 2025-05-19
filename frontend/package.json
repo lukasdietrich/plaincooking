@@ -30,7 +30,7 @@
 		"globals": "^16.0.0",
 		"openapi-typescript": "^7.6.1",
 		"prettier": "^3.5.3",
-		"prettier-plugin-svelte": "^3.3.3",
+		"prettier-plugin-svelte": "^3.4.0",
 		"svelte": "^5.28.2",
 		"svelte-check": "^4.1.7",
 		"swagger2openapi": "^7.0.8",
