@@ -22,7 +22,7 @@
 		"@types/eslint": "^9.6.1",
 		"@typescript-eslint/eslint-plugin": "^8.32.1",
 		"@typescript-eslint/parser": "^8.32.0",
-		"@unocss/reset": "^66.0.0",
+		"@unocss/reset": "^66.1.2",
 		"@unocss/svelte-scoped": "^66.1.1",
 		"eslint": "^9.26.0",
 		"eslint-config-prettier": "^10.1.1",
