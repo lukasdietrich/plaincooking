@@ -49,7 +49,7 @@
 		"codemirror": "^6.0.1",
 		"fraction.js": "^5.2.2",
 		"lucide-static": "^0.482.0",
-		"marked": "^15.0.11",
+		"marked": "^15.0.12",
 		"openapi-fetch": "^0.14.0",
 		"svelte-i18n": "^4.0.1",
 		"svelte-portal": "^2.2.1",
