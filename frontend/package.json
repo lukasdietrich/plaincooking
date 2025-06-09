@@ -45,7 +45,7 @@
 		"@codemirror/legacy-modes": "^6.5.1",
 		"@fontsource-variable/crimson-pro": "^5.2.5",
 		"@fontsource-variable/inconsolata": "^5.2.5",
-		"@fontsource-variable/readex-pro": "^5.2.5",
+		"@fontsource-variable/readex-pro": "^5.2.9",
 		"codemirror": "^6.0.1",
 		"fraction.js": "^5.2.2",
 		"lucide-static": "^0.482.0",
