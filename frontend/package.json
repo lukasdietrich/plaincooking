@@ -43,7 +43,7 @@
 	"dependencies": {
 		"@codemirror/lang-markdown": "^6.3.2",
 		"@codemirror/legacy-modes": "^6.5.1",
-		"@fontsource-variable/crimson-pro": "^5.2.5",
+		"@fontsource-variable/crimson-pro": "^5.2.6",
 		"@fontsource-variable/inconsolata": "^5.2.5",
 		"@fontsource-variable/readex-pro": "^5.2.9",
 		"codemirror": "^6.0.1",
